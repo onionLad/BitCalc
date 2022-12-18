@@ -13,7 +13,7 @@ I want to design a calculator that keeps track of previous inputs, allowing you 
 - Clear
 - Change Sign
 - Change Base
-- Change Max Size
+- Change Integer Representation (uint32 vs int32 vs uint64 vs int64)
 - Left & Right Shift
 - Bitwise And
 - Bitwise Or
