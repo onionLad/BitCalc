@@ -2,7 +2,7 @@
 A calculator web app that can perform bitwise operations in addition to standard arithmetic.
 
 ## Tools & Languages
-The calculator will be built using JavaScript and React. JavaScript gives us access to OOP and bitwise computations, while React allows us to easily organize and construct the calculator UI.
+The calculator will be built using JavaScript and React. JavaScript gives us access to OOP and bitwise computations, while React allows us to easily organize and construct the calculator UI. The BitCalc directory will have a shell script that can be run to open the calculator in your browser.
 
 ## Features
 I want to design a calculator that keeps track of previous inputs, allowing you to see what have been previously calculated. Additionally, I want the calculator to handle the following operations:
