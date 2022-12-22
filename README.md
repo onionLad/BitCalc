@@ -10,6 +10,7 @@ I want to design a calculator that keeps track of previous inputs, allowing you 
 - Subtract
 - Multiply
 - Divide
+- Modulo
 - Clear
 - Change Sign
 - Change Base
