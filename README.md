@@ -19,3 +19,5 @@ I want to design a calculator that keeps track of previous inputs, allowing you 
 - Bitwise Or
 - Bitwise Xor
 - Bitwise Invert
+- Equality
+- Not
