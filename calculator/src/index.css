@@ -1,13 +1,58 @@
+/*
+ * index.css
+ * Bill Xia
+ * 12/22/22
+ *
+ * Purpose: Describe the presentation of the BitCalc program's UI.
+ */
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(to right, #5191CE, white);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Defines the formatting of the calculator block. */
+.calcUI {
+    background: white;
+    border: 1px solid #666666;
+    padding: 8px;
+
+    width: 288px;
+}
+
+/* 
+ * Defines the formatting of button rows with fewer buttons than what's
+ * standard.
+ */
+.shortRow {
+    margin-left: 96px;
+}
+
+/* Defines formatting of the calcButton class. */
+.calcButton {
+    font-size: smaller;
+    font-family: "Courier New";
+    font-weight: bold;
+
+    text-align: center;
+
+    height: 48px;
+    width: 48px;
+}
+
+/*
+ * There's definitely a more efficient way of doing this, but here's the
+ * formatting of the zero button.
+ */
+
+.zeroButton {
+    font-size: smaller;
+    font-family: "Courier New";
+    font-weight: bold;
+
+    text-align: center;
+
+    height: 48px;
+    width: 48px;
+
+    margin-right: 48px;
 }
