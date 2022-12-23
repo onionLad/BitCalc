@@ -7,16 +7,31 @@
  */
 
 body {
-    background: linear-gradient(to right, #5191CE, white);
+    background: linear-gradient(to right, violet, orange);
 }
 
 /* Defines the formatting of the calculator block. */
 .calcUI {
-    background: white;
+    background: #aaaaaa;
     border: 1px solid #666666;
+    margin: auto;
+    margin-top: 15%;
     padding: 8px;
 
     width: 288px;
+}
+
+/* Defines the formatting of the output window. */
+.outputWindow {
+    background: #ffffff;
+
+    font-size: medium;
+    font-family: "Courier New";
+    font-weight: bold;
+
+    margin-bottom: 8px;
+    border: 1px solid #666666;
+    padding: 8px;
 }
 
 /* 
