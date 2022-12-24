@@ -7,11 +7,6 @@
  *          program.
  */
 
-function numeral(props)
-{
-    alert("NUM INPUT: " + props);
-}
-
 // function binOp(props)
 // {
 //     /* */
@@ -32,10 +27,9 @@ function numeral(props)
 //     /* */
 // }
 
-function invalid(props)
+function invalid(command)
 {
-    alert("BAD INPUT: " + props);
+    alert("BAD INPUT: " + command);
 }
 
-export {numeral};
 export {invalid};

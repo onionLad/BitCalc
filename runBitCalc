@@ -1,0 +1,9 @@
+# runBitCalc
+# Bill Xia
+# 12/23/22
+#
+# Purpose: Opens the BitCalc program in the user's browser.
+# Run with "bash runBitCalc"
+
+cd calculator
+npm start
