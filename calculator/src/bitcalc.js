@@ -13,15 +13,16 @@
  *  IMPORTS                                                                 *
 \* ======================================================================== */
 
-import React from 'react';
-import './index.css';
+import React from "react";
+import "./index.css";
 
-import {To_Binary} from './convert.js';
-import {Bin_To_Dec} from './convert.js';
+import {To_Binary} from "./convert.js";
+import {Bin_To_Dec} from "./convert.js";
 
-import {Binary_add} from './bin_arith.js';
+import {Binary_add} from "./bin_arith.js";
 
-import {invalid} from './commands.js';
+import {evaluate} from "./commands.js";
+import {invalid} from "./commands.js";
 
 /* ======================================================================== *\
  *  HELPER FUNCTIONS                                                        *
@@ -50,6 +51,12 @@ function CalcButton(args) {
         )
     }
 
+}
+
+/* Function that sets the output window to a desired value. */
+function setDisplay(output) {
+    const display = document.getElementById("display");
+    display.innerHTML = output;
 }
 
 /* ======================================================================== *\
@@ -125,6 +132,7 @@ class BitCalc extends React.Component {
 
                 let bin = To_Binary(command);
 
+                /* Stage 0: Read first numeral input for first operand */
                 if (this.state.readStage === 0) {
 
                     this.setState({
@@ -132,22 +140,116 @@ class BitCalc extends React.Component {
                         readStage: 1
                     });
 
-                    const display = document.getElementById("display");
-                    display.innerHTML = Bin_To_Dec(bin);
+                    setDisplay(Bin_To_Dec(bin));
 
+                /* Stage 1: Read further numeral input for first operand */
                 } else if (this.state.readStage === 1) {
 
-                    let prev = To_Binary(10 * Bin_To_Dec(this.state.firstOp));
-                    bin = Binary_add(bin, prev, this.state.size);
+                    let prevFirst = To_Binary(10 * Bin_To_Dec(this.state.firstOp));
+                    bin = Binary_add(bin, prevFirst, this.state.size);
 
                     this.setState({
                         firstOp: bin
                     });
 
-                    const display = document.getElementById("display");
-                    display.innerHTML = Bin_To_Dec(bin);
+                    setDisplay(Bin_To_Dec(bin));
+
+                /* Stage 2: Read first numeral input for second operand */
+                } else if (this.state.readStage === 3) {
+
+                    this.setState({
+                        secondOp: bin,
+                        readStage: 4
+                    });
+
+                    setDisplay(Bin_To_Dec(this.state.firstOp) + " " +
+                                          this.state.operator + " " +
+                                          Bin_To_Dec(bin));
+
+                /* Stage 2: Read further numeral input for second operand */
+                } else if (this.state.readStage === 4) {
+
+                    let prevSecond = To_Binary(10 * Bin_To_Dec(this.state.secondOp));
+                    bin = Binary_add(bin, prevSecond, this.state.size);
+
+                    this.setState({
+                        secondOp: bin
+                    });
+
+                    setDisplay(Bin_To_Dec(this.state.firstOp) + " " +
+                                          this.state.operator + " " +
+                                          Bin_To_Dec(bin));
+
                 }
 
+
+                break;
+
+            /* ============================================================ *\
+             *  Then check for binary operators. These all set the current  *
+             *  operator to the inputted operator then send the program to  *
+             *  Stage 3.                                                    *
+            \* ============================================================ */
+
+            case "+": case "-": case "*": case "/": case "%":
+            case "&&": case "||": case "==": case "<": case ">":
+            case "&": case "|": case "^": case "<<": case ">>":
+
+                if ( (this.state.readStage !== 0) && (this.state.readStage !== 4)) {
+
+                    this.setState({
+                        operator: command,
+                        readStage: 3
+                    });
+                    setDisplay(Bin_To_Dec(this.state.firstOp) + " " + command);
+
+                } else if ((this.state.readStage === 0) || (this.state.readStage === 4)) {
+
+                    var prev = evaluate(this.state);
+                    this.setState({
+                        firstOp: prev,
+                        operator: command,
+                        readStage: 3
+                    });
+                    setDisplay(Bin_To_Dec(prev) + " " + command);
+
+                }
+
+                break;
+
+            /* ============================================================ *\
+             *  The CLR button resets the output window and expression      *
+             *  variables, then sends the program to Stage 0.               *
+            \* ============================================================ */
+
+            case "CLR":
+
+                this.setState({
+                    firstOp: new Array(64).fill(0),
+                    secondOp: new Array(64).fill(0),
+                    operator: "",
+                    readStage: 0
+                });
+
+                setDisplay("Enter Input");
+
+                break;
+
+            /* ============================================================ *\
+             *  The = operator evaluates the current expression and sends   *
+             *  the program to Stage 0.                                     *
+            \* ============================================================ */
+            case "=":
+                
+                var result = evaluate(this.state);
+
+                this.setState({
+                    firstOp: result,
+                    operator: "",
+                    readStage: 0
+                });
+
+                setDisplay("= " + Bin_To_Dec(result));
 
                 break;
 
@@ -163,9 +265,7 @@ class BitCalc extends React.Component {
                     readStage: 0
                 });
 
-                // let displayTxt = "Enter Input";
-                const display = document.getElementById("display");
-                display.innerHTML = "Enter Input";
+                setDisplay("Enter Input");
 
         }
     }
@@ -228,9 +328,9 @@ class BitCalc extends React.Component {
                 <div>
                     {this.renderButton("C")}
                     {this.renderButton("D")}
+                    {this.renderButton("4")}
                     {this.renderButton("5")}
                     {this.renderButton("6")}
-                    {this.renderButton("7")}
                     {this.renderButton("-")}
                 </div>
                 <div>
