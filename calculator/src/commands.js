@@ -11,11 +11,15 @@
  *  IMPORTS                                                                 *
 \* ======================================================================== */
 
-import {Binary_add} from "./bin_arith.js";
-import {Binary_subtract} from "./bin_arith.js";
-import {Binary_multiply} from "./bin_arith.js";
-import {Binary_divide} from "./bin_arith.js";
-import {Binary_modulo} from "./bin_arith.js";
+import {Binary_add} from "./BinaryArith.js";
+import {Binary_subtract} from "./BinaryArith.js";
+import {Binary_multiply} from "./BinaryArith.js";
+import {Binary_divide} from "./BinaryArith.js";
+import {Binary_modulo} from "./BinaryArith.js";
+
+import {Bitwise_and} from "./BitwiseOps";
+import {Bitwise_lshift} from "./BitwiseOps";
+import {Bitwise_rshift} from "./BitwiseOps";
 
 /* ======================================================================== *\
  *  FUNCTIONS                                                               *
@@ -39,24 +43,23 @@ function evaluate(calcState)
         case "%":
             return Binary_modulo(calcState.firstOp, calcState.secondOp,
                                    calcState.size);
+        case "&":
+            return Bitwise_and(calcState.firstOp, calcState.secondOp,
+                               calcState.size);
+        case "<<":
+            return Bitwise_lshift(calcState.firstOp, calcState.secondOp,
+                                  calcState.size);
+        case ">>":
+            return Bitwise_rshift(calcState.firstOp, calcState.secondOp,
+                                  calcState.size);
         default:
             return calcState.firstOp;
     }
 }
 
-// function changeBase(props)
-// {
-//     /* */
-// }
-
-// function changeSize(props)
-// {
-//     /* */
-// }
-
 function invalid(command)
 {
-    alert("UNIMPLEMENTED: " + command);
+    alert("Error: Invalid Command " + command);
 }
 
 export {evaluate};

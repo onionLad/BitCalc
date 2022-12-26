@@ -1,12 +1,10 @@
 /*
- * bitcalc.js
+ * BitCalc.js
  * Bill Xia
  * 12/22/22
  * 
  * Purpose: Implementation of the BitCalc module, which contains all
  *          high-level operations for the BitCalc program.
- * 
- * Note: 
  */
 
 /* ======================================================================== *\
@@ -16,10 +14,10 @@
 import React from "react";
 import "./index.css";
 
-import {To_Binary} from "./convert.js";
-import {Bin_To_Dec} from "./convert.js";
+import {Dec_To_Bin} from "./BaseConvert.js";
+import {Bin_To_Dec} from "./BaseConvert.js";
 
-import {Binary_add} from "./bin_arith.js";
+import {Binary_add} from "./BinaryArith.js";
 
 import {evaluate} from "./commands.js";
 import {invalid} from "./commands.js";
@@ -64,7 +62,7 @@ function setDisplay(output) {
 \* ======================================================================== */
 
 class BitCalc extends React.Component {
-    
+
     /* Constructor */
     constructor(props) {
         super(props);
@@ -130,7 +128,7 @@ class BitCalc extends React.Component {
             case "0": case "1": case "2": case "3": case "4":
             case "5": case "6": case "7": case "8": case "9":
 
-                let bin = To_Binary(command);
+                let bin = Dec_To_Bin(command);
 
                 /* Stage 0: Read first numeral input for first operand */
                 if (this.state.readStage === 0) {
@@ -145,7 +143,7 @@ class BitCalc extends React.Component {
                 /* Stage 1: Read further numeral input for first operand */
                 } else if (this.state.readStage === 1) {
 
-                    let prevFirst = To_Binary(10 * Bin_To_Dec(this.state.firstOp));
+                    let prevFirst = Dec_To_Bin(10 * Bin_To_Dec(this.state.firstOp));
                     bin = Binary_add(bin, prevFirst, this.state.size);
 
                     this.setState({
@@ -169,7 +167,7 @@ class BitCalc extends React.Component {
                 /* Stage 2: Read further numeral input for second operand */
                 } else if (this.state.readStage === 4) {
 
-                    let prevSecond = To_Binary(10 * Bin_To_Dec(this.state.secondOp));
+                    let prevSecond = Dec_To_Bin(10 * Bin_To_Dec(this.state.secondOp));
                     bin = Binary_add(bin, prevSecond, this.state.size);
 
                     this.setState({
@@ -192,10 +190,10 @@ class BitCalc extends React.Component {
             \* ============================================================ */
 
             case "+": case "-": case "*": case "/": case "%":
-            case "&&": case "||": case "==": case "<": case ">":
             case "&": case "|": case "^": case "<<": case ">>":
 
-                if ( (this.state.readStage !== 0) && (this.state.readStage !== 4)) {
+                if ( (this.state.readStage !== 0) && 
+                     (this.state.readStage !== 4)) {
 
                     this.setState({
                         operator: command,
@@ -203,7 +201,8 @@ class BitCalc extends React.Component {
                     });
                     setDisplay(Bin_To_Dec(this.state.firstOp) + " " + command);
 
-                } else if ((this.state.readStage === 0) || (this.state.readStage === 4)) {
+                } else if ((this.state.readStage === 0) || 
+                           (this.state.readStage === 4)) {
 
                     var prev = evaluate(this.state);
                     this.setState({
@@ -294,26 +293,18 @@ class BitCalc extends React.Component {
                     Enter Input
                 </div>
                 <div>
-                    {this.renderButton("Base")}
-                    {this.renderButton("Size")}
-                    {this.renderButton("&&")}
-                    {this.renderButton("||")}
-                    {this.renderButton("!")}
-                    {this.renderButton("==")}
-                </div>
-                <div>
-                    {this.renderButton("<<")}
-                    {this.renderButton(">>")}
+                    {this.renderButton("DEC")}
+                    {this.renderButton("U64")}
                     {this.renderButton("&")}
                     {this.renderButton("|")}
                     {this.renderButton("^")}
                     {this.renderButton("~")}
                 </div>
                 <div>
-                    {this.renderButton("<")}
-                    {this.renderButton(">")}
                     {this.renderButton("CLR")}
                     {this.renderButton("DEL")}
+                    {this.renderButton("<<")}
+                    {this.renderButton(">>")}
                     {this.renderButton("%")}
                     {this.renderButton("/")}
                 </div>

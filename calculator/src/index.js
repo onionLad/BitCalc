@@ -13,7 +13,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import {BitCalc} from './bitcalc.js';
+import {BitCalc} from './BitCalc.js';
 
 /* ======================================================================== *\
  *  PROGRAM START                                                           *
