@@ -162,7 +162,7 @@ class BitCalc extends React.Component {
 
                     setDisplay(Bin_To_Dec(this.state.firstOp) + " " +
                                           this.state.operator + " " +
-                                          Bin_To_Dec(bin));
+                               Bin_To_Dec(bin));
 
                 /* Stage 2: Read further numeral input for second operand */
                 } else if (this.state.readStage === 4) {
@@ -176,7 +176,7 @@ class BitCalc extends React.Component {
 
                     setDisplay(Bin_To_Dec(this.state.firstOp) + " " +
                                           this.state.operator + " " +
-                                          Bin_To_Dec(bin));
+                               Bin_To_Dec(bin));
 
                 }
 
@@ -207,6 +207,7 @@ class BitCalc extends React.Component {
                     var prev = evaluate(this.state);
                     this.setState({
                         firstOp: prev,
+                        secondOp: new Array(64).fill(0),
                         operator: command,
                         readStage: 3
                     });
@@ -235,6 +236,53 @@ class BitCalc extends React.Component {
                 break;
 
             /* ============================================================ *\
+             *  The DEL button removes the last inputted digit/operator.    *
+            \* ============================================================ */
+            case "DEL":
+
+                let newFirst = this.state.firstOp;
+                let newOperator = this.state.operator;
+                let newSecond = this.state.secondOp;
+                let newStage = this.state.readStage;
+
+                if (this.state.readStage === 1) {
+                    newFirst = Dec_To_Bin( parseInt(Bin_To_Dec(this.state.firstOp) / 10) );
+                    if (Bin_To_Dec(newFirst) === 0) {
+                        newStage--;
+                    }
+                } else if (this.state.readStage === 3) {
+                    newOperator = "";
+                    newStage = 1;                   // TODO: Change to account for -/~ sign.
+                } else if (this.state.readStage === 4) {
+                    newSecond = Dec_To_Bin( parseInt(Bin_To_Dec(this.state.secondOp) / 10) );
+                    if (Bin_To_Dec(newSecond) === 0) {
+                        newStage--;
+                    }
+                }
+
+                this.setState({
+                    firstOp: newFirst,
+                    secondOp: newSecond,
+                    operator: newOperator,
+                    readStage: newStage
+                });
+
+                if (newStage === 0) {
+                    setDisplay("Enter Input");
+                } else if (newStage === 1) {
+                    setDisplay(Bin_To_Dec(newFirst));
+                } else if (newStage === 2) {
+                    setDisplay(Bin_To_Dec(newFirst));   // TODO: Change to account for -/~ sign.
+                } else if (newStage === 3) {
+                    setDisplay(Bin_To_Dec(newFirst) + " " + newOperator);
+                } else if (newStage === 4) {
+                    setDisplay(Bin_To_Dec(newFirst) + " " + newOperator + " " +
+                               Bin_To_Dec(newSecond));
+                }
+
+                break;
+
+            /* ============================================================ *\
              *  The = operator evaluates the current expression and sends   *
              *  the program to Stage 0.                                     *
             \* ============================================================ */
@@ -244,6 +292,7 @@ class BitCalc extends React.Component {
 
                 this.setState({
                     firstOp: result,
+                    secondOp: new Array(64).fill(0),
                     operator: "",
                     readStage: 0
                 });

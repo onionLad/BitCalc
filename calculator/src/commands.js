@@ -18,6 +18,8 @@ import {Binary_divide} from "./BinaryArith.js";
 import {Binary_modulo} from "./BinaryArith.js";
 
 import {Bitwise_and} from "./BitwiseOps";
+import {Bitwise_or} from "./BitwiseOps";
+import {Bitwise_xor} from "./BitwiseOps";
 import {Bitwise_lshift} from "./BitwiseOps";
 import {Bitwise_rshift} from "./BitwiseOps";
 
@@ -46,6 +48,12 @@ function evaluate(calcState)
         case "&":
             return Bitwise_and(calcState.firstOp, calcState.secondOp,
                                calcState.size);
+        case "|":
+        return Bitwise_or(calcState.firstOp, calcState.secondOp,
+                            calcState.size);
+        case "^":
+            return Bitwise_xor(calcState.firstOp, calcState.secondOp,
+                                calcState.size);
         case "<<":
             return Bitwise_lshift(calcState.firstOp, calcState.secondOp,
                                   calcState.size);

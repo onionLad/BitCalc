@@ -64,18 +64,22 @@ function Bin_To_Large_Dec(binary)
     let smallNum = 0;
     for (let i = (binary.length - 1); i >= 0; i--) {
         largeNum += binary[i] * (2**i);
-        smallNum += (binary[i] * (2**i)) % 10000;
+        smallNum += (binary[i] * (2**i)) % 1000000;
     }
 
-    smallNum = smallNum % 10000;
-    let upperChunk = parseInt(largeNum / 10000);
+    smallNum = smallNum % 1000000;
+    let upperChunk = parseInt(largeNum / 1000000);
 
     /* There's definitely a clearner way to write this chunk. */
     if (smallNum < 10) {
-        return "" + upperChunk + "000" + smallNum;
+        return "" + upperChunk + "00000" + smallNum;
     } else if (smallNum < 100) {
-        return "" + upperChunk + "00" + smallNum;
+        return "" + upperChunk + "0000" + smallNum;
     } else if (smallNum < 1000) {
+        return "" + upperChunk + "000" + smallNum;
+    } else if (smallNum < 10000) {
+        return "" + upperChunk + "00" + smallNum;
+    } else if (smallNum < 100000) {
         return "" + upperChunk + "0" + smallNum;
     }
 

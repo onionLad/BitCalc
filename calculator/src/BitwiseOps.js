@@ -28,6 +28,28 @@ function Bitwise_and(first, second, size)
     return result;
 }
 
+function Bitwise_or(first, second, size)
+{
+    var result = new Array(64).fill(0);
+    for (let i = 0; i < size; i++) {
+        if ( (first[i] === 1) || (second[i] === 1) ) {
+            result[i] = 1;
+        }
+    }
+    return result;
+}
+
+function Bitwise_xor(first, second, size)
+{
+    var result = new Array(64).fill(0);
+    for (let i = 0; i < size; i++) {
+        if ( ((first[i] === 1) || (second[i] === 1)) && (first[i] !== second[i]) ) {
+            result[i] = 1;
+        }
+    }
+    return result;
+}
+
 function Bitwise_lshift(first, second, size)
 {
     var result = first.slice();
@@ -67,5 +89,7 @@ function Bitwise_rshift(first, second, size)
 }
 
 export {Bitwise_and};
+export {Bitwise_or};
+export {Bitwise_xor};
 export {Bitwise_lshift};
 export {Bitwise_rshift};
