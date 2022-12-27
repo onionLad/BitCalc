@@ -50,6 +50,15 @@ function Bitwise_xor(first, second, size)
     return result;
 }
 
+function Bitwise_invert(binary, size)
+{
+    var result = new Array(64).fill(0);
+    for (let i = 0; i < size; i++) {
+        result[i] = binary[i] ? 0 : 1 ;
+    }
+    return result;
+}
+
 function Bitwise_lshift(first, second, size)
 {
     var result = first.slice();
@@ -91,5 +100,6 @@ function Bitwise_rshift(first, second, size)
 export {Bitwise_and};
 export {Bitwise_or};
 export {Bitwise_xor};
+export {Bitwise_invert};
 export {Bitwise_lshift};
 export {Bitwise_rshift};

@@ -82,6 +82,9 @@ class BitCalc extends React.Component {
             secondOp: new Array(64).fill(0),
             operator: "",
 
+            firstPrefix: "",
+            secondPrefix: "",
+
             /*
              * There's probably a cleaner solution to the stages of input, but
              * this was the best I could come up with after ~2 seconds of
@@ -188,7 +191,6 @@ class BitCalc extends React.Component {
              *  operator to the inputted operator then send the program to  *
              *  Stage 3.                                                    *
             \* ============================================================ */
-
             case "+": case "-": case "*": case "/": case "%":
             case "&": case "|": case "^": case "<<": case ">>":
 
@@ -201,8 +203,7 @@ class BitCalc extends React.Component {
                     });
                     setDisplay(Bin_To_Dec(this.state.firstOp) + " " + command);
 
-                } else if ((this.state.readStage === 0) || 
-                           (this.state.readStage === 4)) {
+                } else if (this.state.readStage === 4) {
 
                     var prev = evaluate(this.state);
                     this.setState({
@@ -218,10 +219,60 @@ class BitCalc extends React.Component {
                 break;
 
             /* ============================================================ *\
+             *  Unary operators will toggle a prefix in front of the        *
+             *  current operand. These will be processed at evaluation.     *
+            \* ============================================================ */
+            case "~":
+
+                // let prefixes;
+                // let index = 0;
+
+                // /* Assigning which prefix array to edit. */
+                // if ((this.state.readStage === 0) || (this.state.readStage === 1) ||
+                //     (this.state.readStage === 2)) {
+
+                //     prefixes = this.state.firstPrefix.slice();
+
+                // } else {
+
+                //     prefixes = this.state.secondPrefix.slice();
+
+                // }
+
+                // /* Editting prefix array. */
+                // if (prefixes.contains(command)) {
+                //     while (prefixes.contains(command)) {
+                //         if (prefixes[index] === command) {
+                //             prefixes.splice(index, index);
+                //         } else {
+                //             index++;
+                //         }
+                //     }
+                // } else {
+                //     prefixes.push(command);
+                //     alert(index);
+                // }
+
+                // /* Display changes. */
+                // if (this.state.readStage === 0) {
+
+                //     this.setState({
+                //         firstPrefix: prefixes
+                //     });
+                //     setDisplay(this.state.firstPrefix.slice().join() + Bin_To_Dec(this.state.firstOp));
+
+                // } else if (this.state.readStage === 3) {
+                //     this.setState({
+                //         secondPrefix: prefixes
+                //     });
+                // }
+
+                break;
+
+            /* ============================================================ *\
              *  The CLR button resets the output window and expression      *
              *  variables, then sends the program to Stage 0.               *
             \* ============================================================ */
-
             case "CLR":
 
                 this.setState({
@@ -334,57 +385,62 @@ class BitCalc extends React.Component {
     render() {
 
         return (
-            <div class="calcUI">
-                <div 
-                    class="outputWindow"
-                    id="display"
-                >
-                    Enter Input
+            <div>
+                <div class="calcUI">
+                    <div 
+                        class="outputWindow"
+                        id="display"
+                    >
+                        Enter Input
+                    </div>
+                    <div>
+                        {this.renderButton("DEC")}
+                        {this.renderButton("U64")}
+                        {this.renderButton("&")}
+                        {this.renderButton("|")}
+                        {this.renderButton("^")}
+                        {this.renderButton("~")}
+                    </div>
+                    <div>
+                        {this.renderButton("CLR")}
+                        {this.renderButton("DEL")}
+                        {this.renderButton("<<")}
+                        {this.renderButton(">>")}
+                        {this.renderButton("%")}
+                        {this.renderButton("/")}
+                    </div>
+                    <div>
+                        {this.renderButton("A")}
+                        {this.renderButton("B")}
+                        {this.renderButton("7")}
+                        {this.renderButton("8")}
+                        {this.renderButton("9")}
+                        {this.renderButton("*")}
+                    </div>
+                    <div>
+                        {this.renderButton("C")}
+                        {this.renderButton("D")}
+                        {this.renderButton("4")}
+                        {this.renderButton("5")}
+                        {this.renderButton("6")}
+                        {this.renderButton("-")}
+                    </div>
+                    <div>
+                        {this.renderButton("E")}
+                        {this.renderButton("F")}
+                        {this.renderButton("1")}
+                        {this.renderButton("2")}
+                        {this.renderButton("3")}
+                        {this.renderButton("+")}
+                    </div>
+                    <div class="shortRow">
+                        {this.renderButton("+/-")}
+                        {this.renderButton("0")}
+                        {this.renderButton("=")}
+                    </div>
                 </div>
-                <div>
-                    {this.renderButton("DEC")}
-                    {this.renderButton("U64")}
-                    {this.renderButton("&")}
-                    {this.renderButton("|")}
-                    {this.renderButton("^")}
-                    {this.renderButton("~")}
-                </div>
-                <div>
-                    {this.renderButton("CLR")}
-                    {this.renderButton("DEL")}
-                    {this.renderButton("<<")}
-                    {this.renderButton(">>")}
-                    {this.renderButton("%")}
-                    {this.renderButton("/")}
-                </div>
-                <div>
-                    {this.renderButton("A")}
-                    {this.renderButton("B")}
-                    {this.renderButton("7")}
-                    {this.renderButton("8")}
-                    {this.renderButton("9")}
-                    {this.renderButton("*")}
-                </div>
-                <div>
-                    {this.renderButton("C")}
-                    {this.renderButton("D")}
-                    {this.renderButton("4")}
-                    {this.renderButton("5")}
-                    {this.renderButton("6")}
-                    {this.renderButton("-")}
-                </div>
-                <div>
-                    {this.renderButton("E")}
-                    {this.renderButton("F")}
-                    {this.renderButton("1")}
-                    {this.renderButton("2")}
-                    {this.renderButton("3")}
-                    {this.renderButton("+")}
-                </div>
-                <div class="shortRow">
-                    {this.renderButton("+/-")}
-                    {this.renderButton("0")}
-                    {this.renderButton("=")}
+                <div class="nametag">
+                    Made by Bill Xia (wxia01@tufts.edu)
                 </div>
             </div>
         );

@@ -42,6 +42,16 @@ body {
     margin-left: 96px;
 }
 
+/*
+ * Defines the formatting of the nametag below the calculator UI.
+ */
+.nametag {
+    position: absolute;
+    margin: 8px;
+    top: 0;
+    left: 0;
+}
+
 /* Defines formatting of the calcButton class. */
 .calcButton {
     font-size: smaller;
