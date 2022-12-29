@@ -20,6 +20,7 @@ import {Binary_modulo} from "./BinaryArith.js";
 import {Bitwise_and} from "./BitwiseOps";
 import {Bitwise_or} from "./BitwiseOps";
 import {Bitwise_xor} from "./BitwiseOps";
+import {Bitwise_invert} from "./BitwiseOps";
 import {Bitwise_lshift} from "./BitwiseOps";
 import {Bitwise_rshift} from "./BitwiseOps";
 
@@ -29,39 +30,49 @@ import {Bitwise_rshift} from "./BitwiseOps";
 
 function evaluate(calcState)
 {
+    let firstOp_local = calcState.firstOp;
+    let secondOp_local = calcState.secondOp;
+
+    if (calcState.firstTild) {
+        firstOp_local = Bitwise_invert(firstOp_local, calcState.size);
+    }
+    if (calcState.secondTild) {
+        secondOp_local = Bitwise_invert(secondOp_local, calcState.size);
+    }
+
     switch(calcState.operator) {
         case "+":
-            return Binary_add(calcState.firstOp, calcState.secondOp,
+            return Binary_add(firstOp_local, secondOp_local,
                               calcState.size);
         case "-":
-            return Binary_subtract(calcState.firstOp, calcState.secondOp,
+            return Binary_subtract(firstOp_local, secondOp_local,
                                    calcState.size);
         case "*":
-            return Binary_multiply(calcState.firstOp, calcState.secondOp,
+            return Binary_multiply(firstOp_local, secondOp_local,
                                    calcState.size);
         case "/":
-            return Binary_divide(calcState.firstOp, calcState.secondOp,
+            return Binary_divide(firstOp_local, secondOp_local,
                                    calcState.size);
         case "%":
-            return Binary_modulo(calcState.firstOp, calcState.secondOp,
+            return Binary_modulo(firstOp_local, secondOp_local,
                                    calcState.size);
         case "&":
-            return Bitwise_and(calcState.firstOp, calcState.secondOp,
+            return Bitwise_and(firstOp_local, secondOp_local,
                                calcState.size);
         case "|":
-        return Bitwise_or(calcState.firstOp, calcState.secondOp,
-                            calcState.size);
+            return Bitwise_or(firstOp_local, secondOp_local,
+                                calcState.size);
         case "^":
-            return Bitwise_xor(calcState.firstOp, calcState.secondOp,
+            return Bitwise_xor(firstOp_local, secondOp_local,
                                 calcState.size);
         case "<<":
-            return Bitwise_lshift(calcState.firstOp, calcState.secondOp,
+            return Bitwise_lshift(firstOp_local, secondOp_local,
                                   calcState.size);
         case ">>":
-            return Bitwise_rshift(calcState.firstOp, calcState.secondOp,
+            return Bitwise_rshift(firstOp_local, secondOp_local,
                                   calcState.size);
         default:
-            return calcState.firstOp;
+            return firstOp_local;
     }
 }
 
