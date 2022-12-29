@@ -18,7 +18,7 @@ body {
     margin-top: 15%;
     padding: 8px;
 
-    width: 288px;
+    width: 432px;
 }
 
 /* Defines the formatting of the output window. */
@@ -39,7 +39,7 @@ body {
  * standard.
  */
 .shortRow {
-    margin-left: 96px;
+    margin-left: 144px;
 }
 
 /*
@@ -61,7 +61,7 @@ body {
     text-align: center;
 
     height: 48px;
-    width: 48px;
+    width: 72px;
 }
 
 /*
@@ -77,7 +77,7 @@ body {
     text-align: center;
 
     height: 48px;
-    width: 48px;
+    width: 72px;
 
-    margin-right: 48px;
+    margin-right: 72px;
 }

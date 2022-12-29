@@ -8,29 +8,22 @@
  */
 
 /* ======================================================================== *\
- * Purpose: Coverts a decimal input into a binary array.                    *
+ * Purpose: Converts a binary array into a string.                          *
 \* ======================================================================== */
-function Dec_To_Bin(decimal)
+function Bin_To_String(binary)
 {
-    let binary = new Array(64).fill(0);
-    decimal = parseInt(decimal);
-
-    /* Max value is 2^64 - 1 */
-    for (let i = 63; i >= 0; i--) {
-
-        /* 
-         * If decimal is greater than or equal to the current place value, we
-         * set that place value to.
-         */
-        if (decimal >= (2**i)) {
-            binary[i] = 1;
-
-            /* Updating decimal for the next iteration. */
-            decimal -= (2**i);
+    let binCopy = [];
+    for (let i = 0; i < binary.length; i++) {
+        if ((i % 4 === 0) && (i !== 0)) {
+            binCopy.push(" ");
         }
+        binCopy.push(binary[i]);
     }
 
-    return binary;
+    // let binCopy = binary.slice();
+
+    return binCopy.reverse().join("");
+
 }
 
 /* ======================================================================== *\
@@ -86,5 +79,68 @@ function Bin_To_Large_Dec(binary)
     return "" + upperChunk + smallNum;
 }
 
-export {Dec_To_Bin};
+/* ======================================================================== *\
+ * Purpose: Converts a binary array into a hexadecimal value.               *
+\* ======================================================================== */
+function Bin_To_Hex(binary)
+{
+    /* Defining an array for mapping hex values. */
+    let hex = [
+        "0", "1", "2", "3", "4", "5", "6", "7",
+        "8", "9", "A", "B", "C", "D", "E", "F"
+    ];
+
+    let hexString = [];
+    let currHex;
+    let firstNotFound = true;
+    for (let i = (binary.length - 1); i >= 0; i--) {
+
+        currHex = 0;
+        for (let j = i; j >= i - 3; j--) {
+            currHex += (binary[j] * (2**((j - i) + 3)));
+        }
+
+        if (firstNotFound) {
+            if (currHex > 0) {
+                hexString.push(hex[currHex]);
+                firstNotFound = false;
+            }
+        } else {
+            hexString.push(hex[currHex]);
+        }
+
+        i -= 3;
+    }
+    return hexString.join("");
+}
+
+/* ======================================================================== *\
+ * Purpose: Coverts a decimal input into a binary array.                    *
+\* ======================================================================== */
+function Dec_To_Bin(decimal)
+{
+    let binary = new Array(64).fill(0);
+    decimal = parseInt(decimal);
+
+    /* Max value is 2^64 - 1 */
+    for (let i = 63; i >= 0; i--) {
+
+        /* 
+         * If decimal is greater than or equal to the current place value, we
+         * set that place value to.
+         */
+        if (decimal >= (2**i)) {
+            binary[i] = 1;
+
+            /* Updating decimal for the next iteration. */
+            decimal -= (2**i);
+        }
+    }
+
+    return binary;
+}
+
+export {Bin_To_String};
 export {Bin_To_Dec};
+export {Bin_To_Hex};
+export {Dec_To_Bin};
