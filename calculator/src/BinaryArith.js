@@ -24,8 +24,8 @@ import {Bitwise_rshift} from "./BitwiseOps.js";
 
 function Binary_add(first, second, size)
 {
-    var sumArray = new Array(64).fill(0);
-    var sum = 0;
+    let sumArray = new Array(64).fill(0);
+    let sum = 0;
     for (let i = 0; i < size; i++) {
 
         sum = first[i] + second[i] + sumArray[i];
@@ -55,7 +55,7 @@ function Binary_add(first, second, size)
 
 function Binary_subtract(first, second, size)
 {
-    var diffArray = new Array(64).fill(0);
+    let diffArray = new Array(64).fill(0);
     let isNegative = false;
 
     if (Bin_To_Dec(first) < Bin_To_Dec(second)) {

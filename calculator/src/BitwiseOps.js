@@ -19,7 +19,7 @@ import {Bin_To_Dec} from "./BaseConvert.js"
 
 function Bitwise_and(first, second, size)
 {
-    var result = new Array(64).fill(0);
+    let result = new Array(64).fill(0);
     for (let i = 0; i < size; i++) {
         if (first[i] === second[i]) {
             result[i] = first[i];
@@ -30,7 +30,7 @@ function Bitwise_and(first, second, size)
 
 function Bitwise_or(first, second, size)
 {
-    var result = new Array(64).fill(0);
+    let result = new Array(64).fill(0);
     for (let i = 0; i < size; i++) {
         if ( (first[i] === 1) || (second[i] === 1) ) {
             result[i] = 1;
@@ -41,7 +41,7 @@ function Bitwise_or(first, second, size)
 
 function Bitwise_xor(first, second, size)
 {
-    var result = new Array(64).fill(0);
+    let result = new Array(64).fill(0);
     for (let i = 0; i < size; i++) {
         if ( ((first[i] === 1) || (second[i] === 1)) && (first[i] !== second[i]) ) {
             result[i] = 1;
@@ -52,7 +52,7 @@ function Bitwise_xor(first, second, size)
 
 function Bitwise_invert(binary, size)
 {
-    var result = new Array(64).fill(0);
+    let result = new Array(64).fill(0);
     for (let i = 0; i < size; i++) {
         result[i] = binary[i] ? 0 : 1 ;
     }
@@ -61,7 +61,7 @@ function Bitwise_invert(binary, size)
 
 function Bitwise_lshift(first, second, size)
 {
-    var result = first.slice();
+    let result = first.slice();
     let shift = Bin_To_Dec(second);
 
     if (shift > size) {
@@ -80,7 +80,7 @@ function Bitwise_lshift(first, second, size)
 
 function Bitwise_rshift(first, second, size)
 {
-    var result = first.slice();
+    let result = first.slice();
     let shift = Bin_To_Dec(second);
 
     if (shift > size) {

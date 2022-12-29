@@ -10,10 +10,10 @@
 /* ======================================================================== *\
  * Purpose: Converts a binary array into a string.                          *
 \* ======================================================================== */
-function Bin_To_String(binary)
+function Bin_To_String(binary, size)
 {
     let binCopy = [];
-    for (let i = 0; i < binary.length; i++) {
+    for (let i = 0; i < size; i++) {
         if ((i % 4 === 0) && (i !== 0)) {
             binCopy.push(" ");
         }
@@ -30,10 +30,10 @@ function Bin_To_String(binary)
  * Purpose: Converts a binary array into a decimal value with value smaller *
  *          than 2^52.                                                      *
 \* ======================================================================== */
-function Bin_To_Dec(binary)
+function Bin_To_Dec(binary, size)
 {
     let decimal = 0;
-    for (let i = (binary.length - 1); i >= 0; i--) {
+    for (let i = (size - 1); i >= 0; i--) {
         decimal += binary[i] * (2**i);
     }
 
@@ -49,7 +49,8 @@ function Bin_To_Dec(binary)
 
 /* ======================================================================== *\
  * Purpose: Converts a binary array into a decimal value with value larger  *
- *          than 2^52.                                                      *
+ *          than 2^52. No size parameter is passed because the function     *
+ *          only ever gets called when the representation is U64.           *
 \* ======================================================================== */
 function Bin_To_Large_Dec(binary)
 {
@@ -82,7 +83,7 @@ function Bin_To_Large_Dec(binary)
 /* ======================================================================== *\
  * Purpose: Converts a binary array into a hexadecimal value.               *
 \* ======================================================================== */
-function Bin_To_Hex(binary)
+function Bin_To_Hex(binary, size)
 {
     /* Defining an array for mapping hex values. */
     let hex = [
@@ -93,7 +94,7 @@ function Bin_To_Hex(binary)
     let hexString = [];
     let currHex;
     let firstNotFound = true;
-    for (let i = (binary.length - 1); i >= 0; i--) {
+    for (let i = (size - 1); i >= 0; i--) {
 
         currHex = 0;
         for (let j = i; j >= i - 3; j--) {

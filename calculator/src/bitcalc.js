@@ -52,7 +52,7 @@ function CalcButton(args) {
                 id="rep"
                 onClick={ args.onClick }
             >
-                U64
+                U32
             </button>
         )
     }
@@ -105,11 +105,11 @@ function setDisplay_auto(state) {
 
     let conversion;
     if (state.base === 2) {
-        conversion = function (binary) {return Bin_To_String(binary)};
+        conversion = function (binary, size) {return Bin_To_String(binary, size)};
     } else if (state.base === 10) {
-        conversion = function (binary) {return Bin_To_Dec(binary)};
+        conversion = function (binary, size) {return Bin_To_Dec(binary, size)};
     } else if (state.base === 16) {
-        conversion = function (binary) {return Bin_To_Hex(binary)};
+        conversion = function (binary, size) {return Bin_To_Hex(binary, size)};
     }
 
     switch (state.readStage)
@@ -119,11 +119,11 @@ function setDisplay_auto(state) {
         case 0:
 
             if (FT_local) {
-                message = "~" + conversion(state.firstOp);
-            } else if ((Bin_To_Dec(state.firstOp) === 0) && (state.base !== 2)) {
+                message = "~" + conversion(state.firstOp, state.size);
+            } else if ((Bin_To_Dec(state.firstOp, state.size) === 0) && (state.base !== 2)) {
                 message = "Enter Input";
             } else {
-                message = conversion(state.firstOp);
+                message = conversion(state.firstOp, state.size);
             }
 
             // message = (FT_local ? ("~" + conversion(state.firstOp)) : "Enter Input");
@@ -135,7 +135,7 @@ function setDisplay_auto(state) {
         case 1:
 
             message = (FT_local ? "~" : "" ) + 
-                        conversion(state.firstOp);
+                        conversion(state.firstOp, state.size);
             display.innerHTML = message;
             break;
 
@@ -143,7 +143,7 @@ function setDisplay_auto(state) {
         case 2:
 
             message = (FT_local ? "~" : "" ) + 
-                        conversion(state.firstOp) + " " + 
+                        conversion(state.firstOp, state.size) + " " + 
                         state.operator;
             display.innerHTML = message;
             break;
@@ -152,7 +152,7 @@ function setDisplay_auto(state) {
         case 3: 
         
             message = (FT_local ? "~" : "" ) + 
-                        conversion(state.firstOp) + " " + 
+                        conversion(state.firstOp, state.size) + " " + 
                         state.operator +
                         (ST_local ? " ~0" : "" );
             display.innerHTML = message;
@@ -162,10 +162,10 @@ function setDisplay_auto(state) {
         case 4:
 
             message = (FT_local ? "~" : "" ) + 
-                        conversion(state.firstOp) + " " + 
+                        conversion(state.firstOp, state.size) + " " + 
                         state.operator + " " +
                         (ST_local ? "~" : "" ) +
-                        conversion(state.secondOp);
+                        conversion(state.secondOp, state.size);
             display.innerHTML = message;
             break;
 
@@ -196,7 +196,7 @@ class BitCalc extends React.Component {
              * are interpretted.
              */
             signed: false,
-            size: 64,
+            size: 32,
             firstOp: new Array(64).fill(0),
             secondOp: new Array(64).fill(0),
             operator: "",
@@ -299,7 +299,7 @@ class BitCalc extends React.Component {
                 /* Stage 1: Read further numeral input for first operand */
                 } else if (this.state.readStage === 1) {
 
-                    let prevFirst = Dec_To_Bin(multiplier * Bin_To_Dec(this.state.firstOp));
+                    let prevFirst = Dec_To_Bin(multiplier * Bin_To_Dec(this.state.firstOp, this.state.size));
                     bin = Binary_add(bin, prevFirst, this.state.size);
 
                     this.setState({
@@ -327,7 +327,7 @@ class BitCalc extends React.Component {
                 /* Stage 2: Read further numeral input for second operand */
                 } else if (this.state.readStage === 4) {
 
-                    let prevSecond = Dec_To_Bin(multiplier * Bin_To_Dec(this.state.secondOp));
+                    let prevSecond = Dec_To_Bin(multiplier * Bin_To_Dec(this.state.secondOp, this.state.size));
                     bin = Binary_add(bin, prevSecond, this.state.size);
 
                     this.setState({
@@ -368,7 +368,7 @@ class BitCalc extends React.Component {
                 } else if ((this.state.readStage === 0) || 
                            (this.state.readStage === 4)) {
 
-                    var prev = evaluate(this.state);
+                    let prev = evaluate(this.state);
                     this.setState({
                         firstOp: prev,
                         secondOp: new Array(64).fill(0),
@@ -448,8 +448,8 @@ class BitCalc extends React.Component {
                 let newStage = this.state.readStage;
 
                 if (this.state.readStage === 1) {
-                    newFirst = Dec_To_Bin( parseInt(Bin_To_Dec(this.state.firstOp) / 10) );
-                    if (Bin_To_Dec(newFirst) === 0) {
+                    newFirst = Dec_To_Bin( parseInt(Bin_To_Dec(this.state.firstOp, this.state.size) / 10) );
+                    if (Bin_To_Dec(newFirst, this.state.size) === 0) {
                         newStage--;
                         newFT = false;
                     }
@@ -457,8 +457,8 @@ class BitCalc extends React.Component {
                     newOperator = "";
                     newStage = 1;
                 } else if (this.state.readStage === 4) {
-                    newSecond = Dec_To_Bin( parseInt(Bin_To_Dec(this.state.secondOp) / 10) );
-                    if (Bin_To_Dec(newSecond) === 0) {
+                    newSecond = Dec_To_Bin( parseInt(Bin_To_Dec(this.state.secondOp, this.state.size) / 10) );
+                    if (Bin_To_Dec(newSecond, this.state.size) === 0) {
                         newStage--;
                         newST = false;
                     }
@@ -496,7 +496,7 @@ class BitCalc extends React.Component {
             \* ============================================================ */
             case "=":
 
-                var result = evaluate(this.state);
+                let result = evaluate(this.state);
 
                 this.setState({
                     firstOp: result,
@@ -510,11 +510,11 @@ class BitCalc extends React.Component {
                 });
 
                 if (this.state.base === 2) {
-                    setDisplay("= " + Bin_To_String(result));
+                    setDisplay("= " + Bin_To_String(result, this.state.size));
                 } else if (this.state.base === 10) {
-                    setDisplay("= " + Bin_To_Dec(result));
+                    setDisplay("= " + Bin_To_Dec(result, this.state.size));
                 } else if (this.state.base === 16) {
-                    //
+                    setDisplay("= " + Bin_To_Hex(result, this.state.size));
                 }
 
                 break;
@@ -545,6 +545,59 @@ class BitCalc extends React.Component {
 
                 this.setState({
                     base: newBase
+                }, () => {
+                    setDisplay_auto(this.state);
+                });
+
+                break;
+
+            /* ============================================================ *\
+             *  If the representation button is clicked, cycle through the  *
+             *  integer representations (sizes/signages) supported by the   *
+             * calculator.                                                  *
+            \* ============================================================ */
+            case "Rep":
+
+                const repButton = document.getElementById("rep");
+
+                let currRep = repButton.innerHTML;
+                let newRep;
+                let newSign;
+                let newSize;
+                if (currRep === "U32") {
+                    newRep = "S32";
+                    newSign = true;
+                    newSize = 32;
+                } else if (currRep === "S32") {
+                    newRep = "U64";
+                    newSign = false;
+                    newSize = 64;
+                } else if (currRep === "U64") {
+                    newRep = "S64";
+                    newSign = true;
+                    newSize = 64;
+                } else if (currRep === "S64") {
+                    newRep = "U32";
+                    newSign = false;
+                    newSize = 32;
+                }
+
+                let croppedFirst = this.state.firstOp;
+                let croppedSecond = this.state.secondOp;
+                if (newSize === 32) {
+                    for (let i = 63; i >= 32; i--) {
+                        croppedFirst[i] = 0;
+                        croppedSecond[i] = 0;
+                    }
+                }
+
+                repButton.innerHTML = newRep;
+
+                this.setState({
+                    signed: newSign,
+                    size: newSize,
+                    firstOp: croppedFirst,
+                    secondOp: croppedSecond
                 }, () => {
                     setDisplay_auto(this.state);
                 });
