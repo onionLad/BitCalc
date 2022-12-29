@@ -15,6 +15,7 @@ import {Dec_To_Bin} from "./BaseConvert.js";
 import {Bin_To_Dec} from "./BaseConvert.js";
 
 import {Bitwise_and} from "./BitwiseOps.js";
+import {Bitwise_invert} from "./BitwiseOps.js";
 import {Bitwise_lshift} from "./BitwiseOps.js";
 import {Bitwise_rshift} from "./BitwiseOps.js";
 
@@ -58,7 +59,7 @@ function Binary_subtract(first, second, size)
     let diffArray = new Array(64).fill(0);
     let isNegative = false;
 
-    if (Bin_To_Dec(first) < Bin_To_Dec(second)) {
+    if (Bin_To_Dec(first, false, size) < Bin_To_Dec(second, false, size)) {
         let temp = first;
         first = second;
         second = temp;
@@ -74,42 +75,92 @@ function Binary_subtract(first, second, size)
     }
 
     if (isNegative) {
-        diffArray = Binary_subtract(diffArray, Dec_To_Bin(1), size);
+        diffArray = Binary_subtract(diffArray, Dec_To_Bin(1, size), size);
         diffArray = Binary_subtract(new Array(64).fill(1), diffArray, size);
     }
 
     return diffArray;
 }
 
-function Binary_multiply(first, second, size)
+function Binary_multiply(first, second, size,)
 {
     let product = new Array(64).fill(0);
     let firstLocal = first.slice();
     let secondLocal = second.slice();
 
-    let binary_One = Dec_To_Bin(1);
+    let binary_One = Dec_To_Bin(1, size);
 
-    while (Bin_To_Dec(secondLocal) > 0) {
-        if ( Bin_To_Dec( Bitwise_and(secondLocal, binary_One, size) ) ) {
+    /* Repeat until the second operand gets shifted to 0. */
+    while ( Bin_To_Dec(secondLocal, false, size) > 0 ) {
+
+        /* If the second operand is odd, add the first operand to the product. */
+        if ( Bin_To_Dec( Bitwise_and(secondLocal, binary_One, size), false, size ) ) {
             product = Binary_add(product, firstLocal, size);
         }
+
+        /* Performing shifts. This works because [ a*b = (a*2) * (b/2) ] */
         firstLocal = Bitwise_lshift(firstLocal, binary_One, size);
         secondLocal = Bitwise_rshift(secondLocal, binary_One, size);
+
     }
+
+    // alert(Bin_To_Dec(product));
 
     return product;
 
     // return Dec_To_Bin(Bin_To_Dec(first) * Bin_To_Dec(second));
 }
 
-function Binary_divide(first, second, size)
+function Binary_divide(first, second, size, isSigned)
 {
-    return Dec_To_Bin(Bin_To_Dec(first) / Bin_To_Dec(second));
+    /* Determining signage. */
+    let firstNegative = (Bin_To_Dec(first, isSigned, size) < 0) ? true : false;
+    let secondNegative = (Bin_To_Dec(second, isSigned, size) < 0) ? true : false;
+
+    alert("FIRST: " + firstNegative + " | SECOND: " + secondNegative);
+
+    let binary_One = Dec_To_Bin(1, size);
+
+    /* Different cases for each signage variation. */
+    if (firstNegative) {
+
+        first = Binary_add( Bitwise_invert(first, size), binary_One, size );
+
+        /* First and second are negative. */
+        if (secondNegative) {
+            second = Binary_add( Bitwise_invert(second, size), binary_One, size );
+            return Dec_To_Bin( Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size),
+                                size );
+        } 
+
+        /* Only first is negative. */
+        else {
+            return Dec_To_Bin( -1 * (parseInt(Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size))),
+                                size );
+        }
+    }
+
+    /* Only second is negative. */
+    else if (secondNegative) {
+        second = Binary_add( Bitwise_invert(second, size), binary_One, size );
+        return Dec_To_Bin( -1 * (parseInt(Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size))),
+                            size );
+    }
+
+    /* Neither operand is negative. */
+    else {
+        alert(Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size));
+        return Dec_To_Bin( Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size),
+                            size );
+    }
+
+    // return Dec_To_Bin(Bin_To_Dec(first) / Bin_To_Dec(second));
 }
 
 function Binary_modulo(first, second, size)
 {
-    return Dec_To_Bin(Bin_To_Dec(first) % Bin_To_Dec(second));
+    return Dec_To_Bin( Bin_To_Dec(first, true, size) % Bin_To_Dec(second, true, size),
+                        size );
 }
 
 export {Binary_add};

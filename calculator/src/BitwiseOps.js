@@ -62,7 +62,7 @@ function Bitwise_invert(binary, size)
 function Bitwise_lshift(first, second, size)
 {
     let result = first.slice();
-    let shift = Bin_To_Dec(second);
+    let shift = Bin_To_Dec(second, false, size);
 
     if (shift > size) {
         alert("Error: Attempted shift exceeding " + size);
@@ -75,13 +75,14 @@ function Bitwise_lshift(first, second, size)
         }
         result[0] = 0;
     }
+    // alert(result);
     return result;
 }
 
 function Bitwise_rshift(first, second, size)
 {
     let result = first.slice();
-    let shift = Bin_To_Dec(second);
+    let shift = Bin_To_Dec(second, false, size);
 
     if (shift > size) {
         alert("Error: Attempted shift exceeding " + size);

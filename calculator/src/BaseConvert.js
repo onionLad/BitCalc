@@ -8,9 +8,18 @@
  */
 
 /* ======================================================================== *\
+ *  IMPORTS                                                                 *
+\* ======================================================================== */
+
+import {Binary_add} from "./BinaryArith.js";
+import {Binary_subtract} from "./BinaryArith.js";
+
+import {Bitwise_invert} from "./BitwiseOps.js";
+
+/* ======================================================================== *\
  * Purpose: Converts a binary array into a string.                          *
 \* ======================================================================== */
-function Bin_To_String(binary, size)
+function Bin_To_String(binary, isSigned, size)
 {
     let binCopy = [];
     for (let i = 0; i < size; i++) {
@@ -29,17 +38,50 @@ function Bin_To_String(binary, size)
 /* ======================================================================== *\
  * Purpose: Converts a binary array into a decimal value with value smaller *
  *          than 2^52.                                                      *
+ *                                                                          *
+ * Bugs:    The entire calculator crashes if the input "1 << 63" is         *
+ *          processed while the representation is S64. I believe this       *
+ *          function is the source of the issue.                            *
 \* ======================================================================== */
-function Bin_To_Dec(binary, size)
+function Bin_To_Dec(binary, isSigned, size)
 {
+    // alert(binary + "   " + isSigned + "   " + size);
+
+    /* Calculating the decimal value. */
     let decimal = 0;
-    for (let i = (size - 1); i >= 0; i--) {
+    for (let i = size - 1; i >= 0; i--) {
         decimal += binary[i] * (2**i);
     }
 
+    /* 
+     * If the decimal should be negative, change its value to follow two's
+     * complement format.
+     * 
+     * That is, the smallest (in binary) negative value should be the most
+     * negative while -1 should have the largest (in binary) value.
+     */
+    if (isSigned && (binary[size - 1] === 1)) {
+
+        if (size === 32) {
+            decimal = -1 * ((2**size) - decimal);
+        } 
+
+        else {
+            let max = new Array(64).fill(0);
+            // alert(max);
+            // alert(binary);
+
+            let diff = Binary_subtract(max, binary, size);
+            alert(diff);
+
+            decimal = -1 * Bin_To_Dec( diff, isSigned, size );
+        }
+
+    }
+
     /*
-     * If decimal exceeds the max value of a JS number, we need to manually
-     * find its value.
+     * If decimal exceeds the max accurate value of a JS number (2^52 - 1), we
+     * need to manually find its exact value.
      */
     if (decimal > 4503599627370495) {
         return Bin_To_Large_Dec(binary);
@@ -83,7 +125,7 @@ function Bin_To_Large_Dec(binary)
 /* ======================================================================== *\
  * Purpose: Converts a binary array into a hexadecimal value.               *
 \* ======================================================================== */
-function Bin_To_Hex(binary, size)
+function Bin_To_Hex(binary, isSigned, size)
 {
     /* Defining an array for mapping hex values. */
     let hex = [
@@ -118,10 +160,20 @@ function Bin_To_Hex(binary, size)
 /* ======================================================================== *\
  * Purpose: Coverts a decimal input into a binary array.                    *
 \* ======================================================================== */
-function Dec_To_Bin(decimal)
+function Dec_To_Bin(decimal, size)
 {
     let binary = new Array(64).fill(0);
     decimal = parseInt(decimal);
+
+    // let isNegative = false;
+    // if ((decimal < 0) || decimal >= (2**size)) {
+    //     isNegative = true;
+    // }
+
+    let isNegative = (decimal < 0) ? true : false ;
+    if (isNegative) {
+        decimal = -1 * decimal;
+    }
 
     /* Max value is 2^64 - 1 */
     for (let i = 63; i >= 0; i--) {
@@ -136,6 +188,12 @@ function Dec_To_Bin(decimal)
             /* Updating decimal for the next iteration. */
             decimal -= (2**i);
         }
+    }
+
+    if (isNegative) {
+        let binary_One = new Array(64).fill(0);
+        binary_One[0] = 1;
+        binary = Binary_add( Bitwise_invert(binary, size), binary_One, size );
     }
 
     return binary;

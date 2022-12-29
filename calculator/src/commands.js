@@ -52,7 +52,7 @@ function evaluate(calcState)
                                    calcState.size);
         case "/":
             return Binary_divide(firstOp_local, secondOp_local,
-                                   calcState.size);
+                                   calcState.size, calcState.isSigned);
         case "%":
             return Binary_modulo(firstOp_local, secondOp_local,
                                    calcState.size);
