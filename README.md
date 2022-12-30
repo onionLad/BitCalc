@@ -12,7 +12,7 @@ The calculator can perform the following operations on inputted numbers:
 - Divide
 - Modulo
 - Change Sign
-- Change Base
+- Change Base (binary vs decimal vs hexadecimal)
 - Change Integer Representation (uint32 vs int32 vs uint64 vs int64)
 - Left & Right Shift
 - Bitwise And
