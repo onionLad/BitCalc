@@ -21,6 +21,7 @@ import {Bitwise_and} from "./BitwiseOps";
 import {Bitwise_or} from "./BitwiseOps";
 import {Bitwise_xor} from "./BitwiseOps";
 import {Bitwise_invert} from "./BitwiseOps";
+import {Bitwise_change} from "./BitwiseOps";
 import {Bitwise_lshift} from "./BitwiseOps";
 import {Bitwise_rshift} from "./BitwiseOps";
 
@@ -38,6 +39,12 @@ function evaluate(calcState)
     }
     if (calcState.secondTild) {
         secondOp_local = Bitwise_invert(secondOp_local, calcState.size);
+    }
+    if (calcState.firstSign) {
+        firstOp_local = Bitwise_change(firstOp_local, calcState.size);
+    }
+    if (calcState.secondSign) {
+        secondOp_local = Bitwise_change(secondOp_local, calcState.size);
     }
 
     switch(calcState.operator) {

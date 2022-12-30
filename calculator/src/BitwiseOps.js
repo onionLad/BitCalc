@@ -11,7 +11,9 @@
  *  IMPORTS                                                                 *
 \* ======================================================================== */
 
-import {Bin_To_Dec} from "./BaseConvert.js"
+import {Bin_To_Dec} from "./BaseConvert.js";
+
+import {Binary_add} from "./BinaryArith.js";
 
 /* ======================================================================== *\
  *  FUNCTIONS                                                               *
@@ -57,6 +59,13 @@ function Bitwise_invert(binary, size)
         result[i] = binary[i] ? 0 : 1 ;
     }
     return result;
+}
+
+function Bitwise_change(binary, size)
+{
+    let binary_One = new Array(64).fill(0);
+    binary_One[0] = 1;
+    return Binary_add( Bitwise_invert(binary, size), binary_One, size );
 }
 
 function Bitwise_lshift(first, second, size)
@@ -106,5 +115,6 @@ export {Bitwise_and};
 export {Bitwise_or};
 export {Bitwise_xor};
 export {Bitwise_invert};
+export {Bitwise_change};
 export {Bitwise_lshift};
 export {Bitwise_rshift};

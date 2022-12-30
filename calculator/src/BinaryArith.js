@@ -18,6 +18,7 @@ import {Binary_GT} from "./BinaryLogic.js";
 
 import {Bitwise_and} from "./BitwiseOps.js";
 import {Bitwise_invert} from "./BitwiseOps.js";
+import {Bitwise_change} from  "./BitwiseOps.js";
 import {Bitwise_lshift} from "./BitwiseOps.js";
 import {Bitwise_rshift} from "./BitwiseOps.js";
 
@@ -79,9 +80,12 @@ function Binary_subtract(first, second, size)
 
     if (isNegative) {
 
-        let binary_One = new Array(64).fill(0);
-        binary_One[0] = 1;
-        diffArray = Binary_add( Bitwise_invert(diffArray, size), binary_One, size );
+        // let binary_One = new Array(64).fill(0);
+        // binary_One[0] = 1;
+        // diffArray = Binary_add( Bitwise_invert(diffArray, size), binary_One, size );
+
+        diffArray = Bitwise_change(diffArray, size);
+
     }
 
     return diffArray;
@@ -124,16 +128,18 @@ function Binary_divide(first, second, size, isSigned)
 
     // alert("FIRST: " + firstNegative + " | SECOND: " + secondNegative);
 
-    let binary_One = Dec_To_Bin(1, size);
+    // let binary_One = Dec_To_Bin(1, size);
 
     /* Different cases for each signage variation. */
     if (firstNegative) {
 
-        first = Binary_add( Bitwise_invert(first, size), binary_One, size );
+        // first = Binary_add( Bitwise_invert(first, size), binary_One, size );
+        first = Bitwise_change(first, size);
 
         /* First and second are negative. */
         if (secondNegative) {
-            second = Binary_add( Bitwise_invert(second, size), binary_One, size );
+            // second = Binary_add( Bitwise_invert(second, size), binary_One, size );
+            second = Bitwise_change(second, size);
             return Dec_To_Bin( Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size),
                                 size );
         } 
@@ -147,7 +153,8 @@ function Binary_divide(first, second, size, isSigned)
 
     /* Only second is negative. */
     else if (secondNegative) {
-        second = Binary_add( Bitwise_invert(second, size), binary_One, size );
+        // second = Binary_add( Bitwise_invert(second, size), binary_One, size );
+        second = Bitwise_change(second, size);
         return Dec_To_Bin( -1 * (parseInt(Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size))),
                             size );
     }
