@@ -55,7 +55,7 @@ function evaluate(calcState)
                                    calcState.size, calcState.isSigned);
         case "%":
             return Binary_modulo(firstOp_local, secondOp_local,
-                                   calcState.size);
+                                   calcState.size, calcState.isSigned);
         case "&":
             return Bitwise_and(firstOp_local, secondOp_local,
                                calcState.size);
@@ -80,6 +80,10 @@ function invalid(command)
 {
     alert("Error: Invalid Command " + command);
 }
+
+/* ======================================================================== *\
+ *  EXPORTS                                                                 *
+\* ======================================================================== */
 
 export {evaluate};
 export {invalid};

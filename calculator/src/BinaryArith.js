@@ -14,6 +14,8 @@
 import {Dec_To_Bin} from "./BaseConvert.js";
 import {Bin_To_Dec} from "./BaseConvert.js";
 
+import {Binary_GT} from "./BinaryLogic.js";
+
 import {Bitwise_and} from "./BitwiseOps.js";
 import {Bitwise_invert} from "./BitwiseOps.js";
 import {Bitwise_lshift} from "./BitwiseOps.js";
@@ -59,7 +61,8 @@ function Binary_subtract(first, second, size)
     let diffArray = new Array(64).fill(0);
     let isNegative = false;
 
-    if (Bin_To_Dec(first, false, size) < Bin_To_Dec(second, false, size)) {
+    // if (Bin_To_Dec(first, false, size) < Bin_To_Dec(second, false, size)) {
+    if ( Binary_GT(second, first, size, false) ) {
         let temp = first;
         first = second;
         second = temp;
@@ -75,8 +78,10 @@ function Binary_subtract(first, second, size)
     }
 
     if (isNegative) {
-        diffArray = Binary_subtract(diffArray, Dec_To_Bin(1, size), size);
-        diffArray = Binary_subtract(new Array(64).fill(1), diffArray, size);
+
+        let binary_One = new Array(64).fill(0);
+        binary_One[0] = 1;
+        diffArray = Binary_add( Bitwise_invert(diffArray, size), binary_One, size );
     }
 
     return diffArray;
@@ -117,7 +122,7 @@ function Binary_divide(first, second, size, isSigned)
     let firstNegative = (Bin_To_Dec(first, isSigned, size) < 0) ? true : false;
     let secondNegative = (Bin_To_Dec(second, isSigned, size) < 0) ? true : false;
 
-    alert("FIRST: " + firstNegative + " | SECOND: " + secondNegative);
+    // alert("FIRST: " + firstNegative + " | SECOND: " + secondNegative);
 
     let binary_One = Dec_To_Bin(1, size);
 
@@ -149,7 +154,7 @@ function Binary_divide(first, second, size, isSigned)
 
     /* Neither operand is negative. */
     else {
-        alert(Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size));
+        // alert(Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size));
         return Dec_To_Bin( Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size),
                             size );
     }
@@ -157,11 +162,21 @@ function Binary_divide(first, second, size, isSigned)
     // return Dec_To_Bin(Bin_To_Dec(first) / Bin_To_Dec(second));
 }
 
-function Binary_modulo(first, second, size)
+function Binary_modulo(first, second, size, isSigned)
 {
-    return Dec_To_Bin( Bin_To_Dec(first, true, size) % Bin_To_Dec(second, true, size),
-                        size );
+    let result = parseInt( Bin_To_Dec(first, isSigned, size) ) % 
+                parseInt( Bin_To_Dec(second, isSigned, size) );
+
+    if (result < 0) {
+        result *= -1;
+    }
+
+    return Dec_To_Bin( result, size );
 }
+
+/* ======================================================================== *\
+ *  EXPORTS                                                                 *
+\* ======================================================================== */
 
 export {Binary_add};
 export {Binary_subtract};

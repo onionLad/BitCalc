@@ -14,6 +14,9 @@
 import {Binary_add} from "./BinaryArith.js";
 import {Binary_subtract} from "./BinaryArith.js";
 
+import {Binary_EQ} from "./BinaryLogic.js";
+// import {Binary_GT} from "./BinaryLogic.js";
+
 import {Bitwise_invert} from "./BitwiseOps.js";
 
 /* ======================================================================== *\
@@ -53,6 +56,8 @@ function Bin_To_Dec(binary, isSigned, size)
         decimal += binary[i] * (2**i);
     }
 
+    // alert(decimal);
+
     /* 
      * If the decimal should be negative, change its value to follow two's
      * complement format.
@@ -62,17 +67,30 @@ function Bin_To_Dec(binary, isSigned, size)
      */
     if (isSigned && (binary[size - 1] === 1)) {
 
+        let maxNegative = new Array(64).fill(0);
+        maxNegative[63] = 1;
+
         if (size === 32) {
             decimal = -1 * ((2**size) - decimal);
         } 
 
+        /* 
+         * Edge Case: The most negative int64 number causes the program to go
+         *            infinite. When we encounter this case, simply print the
+         *            number as a string.
+         */
+        else if (isSigned && (size === 64) && Binary_EQ(binary, maxNegative, size)) {
+            return "-9223372036854775808";
+        }
+
         else {
             let max = new Array(64).fill(0);
-            // alert(max);
-            // alert(binary);
+
+            // alert("yup");
 
             let diff = Binary_subtract(max, binary, size);
-            alert(diff);
+
+            // alert(diff);
 
             decimal = -1 * Bin_To_Dec( diff, isSigned, size );
         }
@@ -83,8 +101,9 @@ function Bin_To_Dec(binary, isSigned, size)
      * If decimal exceeds the max accurate value of a JS number (2^52 - 1), we
      * need to manually find its exact value.
      */
-    if (decimal > 4503599627370495) {
-        return Bin_To_Large_Dec(binary);
+    if (Math.abs(decimal) > 4503599627370495) {
+    // if ( Binary_GT(decimal, Dec_To_Bin(4503599627370495, size), size, isSigned) ) {
+        return Bin_To_Large_Dec(binary, isSigned);
     }
     return decimal;
 }
@@ -92,10 +111,15 @@ function Bin_To_Dec(binary, isSigned, size)
 /* ======================================================================== *\
  * Purpose: Converts a binary array into a decimal value with value larger  *
  *          than 2^52. No size parameter is passed because the function     *
- *          only ever gets called when the representation is U64.           *
+ *          only ever gets called on 64-bit representations.                *
 \* ======================================================================== */
-function Bin_To_Large_Dec(binary)
+function Bin_To_Large_Dec(binary, isSigned)
 {
+    if (isSigned) {
+        let maxNegative = new Array(64).fill(0);
+        binary = Binary_subtract(maxNegative, binary, 64);
+    }
+
     let largeNum = 0;
     let smallNum = 0;
     for (let i = (binary.length - 1); i >= 0; i--) {
@@ -119,7 +143,7 @@ function Bin_To_Large_Dec(binary)
         return "" + upperChunk + "0" + smallNum;
     }
 
-    return "" + upperChunk + smallNum;
+    return (isSigned ? "-" : "") + upperChunk + smallNum;
 }
 
 /* ======================================================================== *\
@@ -198,6 +222,10 @@ function Dec_To_Bin(decimal, size)
 
     return binary;
 }
+
+/* ======================================================================== *\
+ *  EXPORTS                                                                 *
+\* ======================================================================== */
 
 export {Bin_To_String};
 export {Bin_To_Dec};

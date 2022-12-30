@@ -98,6 +98,10 @@ function Bitwise_rshift(first, second, size)
     return result;
 }
 
+/* ======================================================================== *\
+ *  EXPORTS                                                                 *
+\* ======================================================================== */
+
 export {Bitwise_and};
 export {Bitwise_or};
 export {Bitwise_xor};

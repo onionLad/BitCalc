@@ -88,6 +88,7 @@ function CalcButton(args) {
 
 /* Function that sets the output window to a desired value. */
 function setDisplay(output) {
+    // alert(output);
     const display = document.getElementById("display");
     display.innerHTML = output;
 }
@@ -516,6 +517,7 @@ class BitCalc extends React.Component {
                     if (this.state.base === 2) {
                         setDisplay("= " + Bin_To_String(result, this.state.isSigned, this.state.size));
                     } else if (this.state.base === 10) {
+                        // alert(result);
                         setDisplay("= " + Bin_To_Dec(result, this.state.isSigned, this.state.size));
                     } else if (this.state.base === 16) {
                         setDisplay("= " + Bin_To_Hex(result, this.state.isSigned, this.state.size));
