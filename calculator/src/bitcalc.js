@@ -1,18 +1,17 @@
-/*
- * BitCalc.js
- * Bill Xia
- * 12/22/22
- * 
- * Purpose: Implementation of the BitCalc module, which contains all
- *          high-level operations for the BitCalc program.
- */
+/* ======================================================================== *\
+ *  File:       BitCalc.js                                                  *
+ *  Author:     Bill Xia                                                    *
+ *  Created:    12/22/22                                                    *
+ *                                                                          *
+ *  Purpose:    The driver file for the BitCalc program. It contains all    *
+ *              high-level operations for the BitCalc program.              *
+\* ======================================================================== */
 
 /* ======================================================================== *\
  *  IMPORTS                                                                 *
 \* ======================================================================== */
 
 import React from "react";
-import "./index.css";
 
 import {Bin_To_String} from "./BaseConvert.js"
 import {Bin_To_Dec} from "./BaseConvert.js";
@@ -23,6 +22,8 @@ import {Binary_add} from "./BinaryArith.js";
 
 import {Bitwise_change} from "./BitwiseOps";
 
+import {CalcButton} from "./CalcButton.js";
+
 import {evaluate} from "./commands.js";
 import {invalid} from "./commands.js";
 
@@ -30,124 +31,9 @@ import {invalid} from "./commands.js";
  *  HELPER FUNCTIONS                                                        *
 \* ======================================================================== */
 
-/* Function used to create buttons */
-function CalcButton(args)
-{
-
-    /*
-     * The base and representation buttons each have a special ID that lets
-     * the script interact with them.
-     */
-    if (args.name === "Base") {
-        return (
-            <button
-                class="calcButton"
-                id="base"
-                onClick={ args.onClick }
-            >
-                DEC
-            </button>
-        )
-    } else if (args.name === "Rep") {
-        return (
-            <button
-                class="calcButton"
-                id="rep"
-                onClick={ args.onClick }
-            >
-                U32
-            </button>
-        )
-    }
-
-    /*
-     * These cases are just here for formatting reasons. Functionally, the 0
-     * and +/- buttons are identical to the other numeral buttons.
-     */
-    else if (args.name === "0") {
-        return (
-            <button
-                class="zeroButton"
-                onClick={ args.onClick }
-            >
-                {args.name}
-            </button>
-        )
-    } else if (args.name === "+/-") {
-        // alert("hello?");
-
-        let isDisabled;
-        if (args.isSigned === true) {
-            isDisabled = false;
-        } else {
-            isDisabled = true;
-        }
-
-        return (
-            <button
-                disabled={isDisabled}
-                class="changeButton"
-                id="change"
-                onClick={ args.onClick }
-            >
-                {args.name}
-            </button>
-        )
-    }
-
-    /* Disabling hex digits, which can be enabled later. */
-    else if ((args.name === "A") || (args.name === "B") || (args.name === "C") || 
-                (args.name === "D") || (args.name === "E") || (args.name === "F")) {
-
-        let isNotHex;
-        if (args.base === 16) {
-            isNotHex = false;
-        } else {
-            isNotHex = true;
-        }
-
-        return (
-            <button
-                disabled={isNotHex}
-                class="hexButton"
-                onClick={ args.onClick }
-            >
-                {args.name}
-            </button>
-        )
-    }
-
-    /* Setting non-binary digits. */
-    else if ((args.name === "2") || (args.name === "3") || (args.name === "4") || 
-                (args.name === "5") || (args.name === "6") || (args.name === "7") ||
-                (args.name === "8") || (args.name === "9")) {
-        return (
-            <button
-                class="decButton"
-                onClick={ args.onClick }
-            >
-                {args.name}
-            </button>
-        )
-    }
-    
-    /* Base Case. */
-    else {
-        return (
-            <button
-                class="calcButton"
-                onClick={ args.onClick }
-            >
-                {args.name}
-            </button>
-        )
-    }
-
-}
-
 /* Function that sets the output window to a desired value. */
-function setDisplay(output) {
-    // alert(output);
+function setDisplay(output)
+{
     const display = document.getElementById("display");
     display.innerHTML = output;
 }
@@ -156,7 +42,8 @@ function setDisplay(output) {
  * Function that sets the output window based on the current state of the
  * BitCalc class.
  */
-function setDisplay_auto(state) {
+function setDisplay_auto(state)
+{
 
     // alert(state.firstSign);
 
@@ -679,13 +566,13 @@ class BitCalc extends React.Component {
                     newLabel = "BIN";
                 }
 
-                /* Toggling Buttons */
-                for (let i = 0; i < hexButtons.length; i++) {
-                    hexButtons[i].disabled = (newBase !== 16);
-                }
-                for (let i = 0; i < decButtons.length; i++) {
-                    decButtons[i].disabled = (newBase === 2);
-                }
+                // /* Toggling Buttons */
+                // for (let i = 0; i < hexButtons.length; i++) {
+                //     hexButtons[i].disabled = (newBase !== 16);
+                // }
+                // for (let i = 0; i < decButtons.length; i++) {
+                //     decButtons[i].disabled = (newBase === 2);
+                // }
 
                 baseButton.innerHTML = newLabel;
 
@@ -807,9 +694,14 @@ class BitCalc extends React.Component {
 
     }
 
-    /* This block of code can probably be replaced with a loop. */
+/* ======================================================================== *\
+ *  Function: render                                                        *
+ *  Description: Renders the BitCalc UI.                                    *
+ *  Input:  None.                                                           *
+ *  Output: An HTML block containing all the components for the BitCalc     *
+ *          program.                                                        *
+\* ======================================================================== */
     render() {
-        // alert("render called");
         return (
             <div>
                 <div class="calcUI">
@@ -865,7 +757,7 @@ class BitCalc extends React.Component {
                         {this.renderButton("=")}
                     </div>
                 </div>
-                <div class="nametag">
+                <div class="nameTag">
                     Made by Bill Xia (wxia01@tufts.edu)
                 </div>
             </div>

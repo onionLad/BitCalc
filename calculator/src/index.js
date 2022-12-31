@@ -1,10 +1,11 @@
-/* 
- * index.js
- * Bill Xia
- * 12/22/22
- * 
- * Purpose: Driver file for the BitCalc program.
- */
+/* ======================================================================== *\
+ *  File:       index.js                                                    *
+ *  Author:     Bill Xia                                                    *
+ *  Created:    12/22/22                                                    *
+ *                                                                          *
+ *  Purpose:    The "main" file for the BitCalc program. Renders an         *
+ *              instance of the BitCalc class.                              *
+\* ======================================================================== */
 
 /* ======================================================================== *\
  *  IMPORTS                                                                 *
