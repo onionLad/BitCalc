@@ -92,6 +92,28 @@ body {
     width: 144px;
 }
 
+.hexButton {
+    font-size: smaller;
+    font-family: "Courier New";
+    font-weight: bold;
+
+    text-align: center;
+
+    height: 48px;
+    width: 72px;
+}
+
+.decButton {
+    font-size: smaller;
+    font-family: "Courier New";
+    font-weight: bold;
+
+    text-align: center;
+
+    height: 48px;
+    width: 72px;
+}
+
 /* button:disabled {
     background-color: #C0C0C0;
 } */

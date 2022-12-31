@@ -31,7 +31,8 @@ import {invalid} from "./commands.js";
 \* ======================================================================== */
 
 /* Function used to create buttons */
-function CalcButton(args) {
+function CalcButton(args)
+{
 
     /*
      * The base and representation buttons each have a special ID that lets
@@ -73,9 +74,18 @@ function CalcButton(args) {
             </button>
         )
     } else if (args.name === "+/-") {
+        // alert("hello?");
+
+        let isDisabled;
+        if (args.isSigned === true) {
+            isDisabled = false;
+        } else {
+            isDisabled = true;
+        }
+
         return (
             <button
-                disabled
+                disabled={isDisabled}
                 class="changeButton"
                 id="change"
                 onClick={ args.onClick }
@@ -85,20 +95,41 @@ function CalcButton(args) {
         )
     }
 
-    // /* Disabling hex digits, which can be enabled later. */
-    // else if ((args.name === "A") || (args.name === "B") || (args.name === "C") || 
-    //             (args.name === "D") || (args.name === "E") || (args.name === "F")) {
-    //     return (
-    //         <button
-    //             disabled
-    //             class="calcButton"
-    //             id="hex"
-    //             onClick={ args.onClick }
-    //         >
-    //             {args.name}
-    //         </button>
-    //     )
-    // }
+    /* Disabling hex digits, which can be enabled later. */
+    else if ((args.name === "A") || (args.name === "B") || (args.name === "C") || 
+                (args.name === "D") || (args.name === "E") || (args.name === "F")) {
+
+        let isNotHex;
+        if (args.base === 16) {
+            isNotHex = false;
+        } else {
+            isNotHex = true;
+        }
+
+        return (
+            <button
+                disabled={isNotHex}
+                class="hexButton"
+                onClick={ args.onClick }
+            >
+                {args.name}
+            </button>
+        )
+    }
+
+    /* Setting non-binary digits. */
+    else if ((args.name === "2") || (args.name === "3") || (args.name === "4") || 
+                (args.name === "5") || (args.name === "6") || (args.name === "7") ||
+                (args.name === "8") || (args.name === "9")) {
+        return (
+            <button
+                class="decButton"
+                onClick={ args.onClick }
+            >
+                {args.name}
+            </button>
+        )
+    }
     
     /* Base Case. */
     else {
@@ -271,6 +302,8 @@ class BitCalc extends React.Component {
 
     handleClick(command)
     {
+        // alert("Click Processed");
+
         switch (command) {
 
             /* ============================================================ *\
@@ -458,9 +491,12 @@ class BitCalc extends React.Component {
             \* ============================================================ */
             case "+/-":
 
+                // alert("huh");
                 if ( !(this.state.isSigned) ) {
                     break;
                 }
+
+                // alert("AAA");
 
                 let newNegative;
                 let RS_local2 = this.state.readStage;
@@ -626,7 +662,8 @@ class BitCalc extends React.Component {
             case "Base":
 
                 const baseButton = document.getElementById("base");
-                const hexButtons = document.getElementById("hex");
+                const hexButtons = document.getElementsByClassName("hexButton");
+                const decButtons = document.getElementsByClassName("decButton");
 
                 let currBase = baseButton.innerHTML;
                 let newBase;
@@ -642,11 +679,13 @@ class BitCalc extends React.Component {
                     newLabel = "BIN";
                 }
 
-                // if (newBase === 16) {
-                //     hexButtons.disabled = false;
-                // } else {
-                //     hexButtons.disabled = true;
-                // }
+                /* Toggling Buttons */
+                for (let i = 0; i < hexButtons.length; i++) {
+                    hexButtons[i].disabled = (newBase !== 16);
+                }
+                for (let i = 0; i < decButtons.length; i++) {
+                    decButtons[i].disabled = (newBase === 2);
+                }
 
                 baseButton.innerHTML = newLabel;
 
@@ -690,12 +729,16 @@ class BitCalc extends React.Component {
                     newSize = 32;
                 }
 
+                /* Toggling Buttons */
                 if (newSign) {
                     changeButton.disabled = false;
                 } else {
                     changeButton.disabled = true;
                 }
+                // alert("isSigned: " + newSign);
+                // alert("Button Disabled: " + document.getElementById("change").disabled);
 
+                /* Cropping Operands */
                 let croppedFirst = this.state.firstOp;
                 let croppedSecond = this.state.secondOp;
                 if (newSize === 32) {
@@ -739,6 +782,7 @@ class BitCalc extends React.Component {
 
                 this.setState({
                     firstOp: new Array(64).fill(0),
+                    secondOp: new Array(64).fill(0),
                     readStage: 0
                 }, () => {
                     setDisplay_auto(this.state);
@@ -756,6 +800,8 @@ class BitCalc extends React.Component {
             <CalcButton
                 name={command}
                 onClick={ () => this.handleClick(command) }
+                base={this.state.base}
+                isSigned={this.state.isSigned}
             />
         )
 
@@ -763,7 +809,7 @@ class BitCalc extends React.Component {
 
     /* This block of code can probably be replaced with a loop. */
     render() {
-
+        // alert("render called");
         return (
             <div>
                 <div class="calcUI">
