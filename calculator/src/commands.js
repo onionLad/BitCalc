@@ -1,11 +1,11 @@
-/* 
- * commands.js
- * Bill Xia
- * 12/23/22
- * 
- * Purpose: Holds functions that control button functions for the BitCalc
- *          program.
- */
+/* ======================================================================== *\
+ *  File:       command.js                                                  *
+ *  Author:     Bill Xia                                                    *
+ *  Created:    12/23/22                                                    *
+ *                                                                          *
+ *  Purpose:    Holds two functions that are used by the BitCalc class's    *
+ *              handleClick method to process user inputs.                  *
+\* ======================================================================== */
 
 /* ======================================================================== *\
  *  IMPORTS                                                                 *

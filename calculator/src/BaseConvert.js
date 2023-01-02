@@ -15,7 +15,6 @@ import {Binary_add} from "./BinaryArith.js";
 import {Binary_subtract} from "./BinaryArith.js";
 
 import {Binary_EQ} from "./BinaryLogic.js";
-// import {Binary_GT} from "./BinaryLogic.js";
 
 import {Bitwise_invert} from "./BitwiseOps.js";
 
@@ -32,8 +31,6 @@ function Bin_To_String(binary, isSigned, size)
         binCopy.push(binary[i]);
     }
 
-    // let binCopy = binary.slice();
-
     return binCopy.reverse().join("");
 
 }
@@ -48,15 +45,11 @@ function Bin_To_String(binary, isSigned, size)
 \* ======================================================================== */
 function Bin_To_Dec(binary, isSigned, size)
 {
-    // alert(binary + "   " + isSigned + "   " + size);
-
     /* Calculating the decimal value. */
     let decimal = 0;
     for (let i = size - 1; i >= 0; i--) {
         decimal += binary[i] * (2**i);
     }
-
-    // alert(decimal);
 
     /* 
      * If the decimal should be negative, change its value to follow two's
@@ -85,13 +78,7 @@ function Bin_To_Dec(binary, isSigned, size)
 
         else {
             let max = new Array(64).fill(0);
-
-            // alert("yup");
-
             let diff = Binary_subtract(max, binary, size);
-
-            // alert(diff);
-
             decimal = -1 * Bin_To_Dec( diff, isSigned, size );
         }
 
@@ -102,7 +89,6 @@ function Bin_To_Dec(binary, isSigned, size)
      * need to manually find its exact value.
      */
     if (Math.abs(decimal) > 4503599627370495) {
-    // if ( Binary_GT(decimal, Dec_To_Bin(4503599627370495, size), size, isSigned) ) {
         return Bin_To_Large_Dec(binary, isSigned);
     }
     return decimal;
@@ -188,11 +174,6 @@ function Dec_To_Bin(decimal, size)
 {
     let binary = new Array(64).fill(0);
     decimal = parseInt(decimal);
-
-    // let isNegative = false;
-    // if ((decimal < 0) || decimal >= (2**size)) {
-    //     isNegative = true;
-    // }
 
     let isNegative = (decimal < 0) ? true : false ;
     if (isNegative) {

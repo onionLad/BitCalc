@@ -53,8 +53,6 @@ function Binary_add(first, second, size)
     }
 
     return sumArray;
-
-    // return Dec_To_Bin(Bin_To_Dec(first) + Bin_To_Dec(second));
 }
 
 function Binary_subtract(first, second, size)
@@ -62,7 +60,6 @@ function Binary_subtract(first, second, size)
     let diffArray = new Array(64).fill(0);
     let isNegative = false;
 
-    // if (Bin_To_Dec(first, false, size) < Bin_To_Dec(second, false, size)) {
     if ( Binary_GT(second, first, size, false) ) {
         let temp = first;
         first = second;
@@ -79,13 +76,7 @@ function Binary_subtract(first, second, size)
     }
 
     if (isNegative) {
-
-        // let binary_One = new Array(64).fill(0);
-        // binary_One[0] = 1;
-        // diffArray = Binary_add( Bitwise_invert(diffArray, size), binary_One, size );
-
         diffArray = Bitwise_change(diffArray, size);
-
     }
 
     return diffArray;
@@ -113,11 +104,7 @@ function Binary_multiply(first, second, size,)
 
     }
 
-    // alert(Bin_To_Dec(product));
-
     return product;
-
-    // return Dec_To_Bin(Bin_To_Dec(first) * Bin_To_Dec(second));
 }
 
 function Binary_divide(first, second, size, isSigned)
@@ -126,19 +113,13 @@ function Binary_divide(first, second, size, isSigned)
     let firstNegative = (Bin_To_Dec(first, isSigned, size) < 0) ? true : false;
     let secondNegative = (Bin_To_Dec(second, isSigned, size) < 0) ? true : false;
 
-    // alert("FIRST: " + firstNegative + " | SECOND: " + secondNegative);
-
-    // let binary_One = Dec_To_Bin(1, size);
-
     /* Different cases for each signage variation. */
     if (firstNegative) {
 
-        // first = Binary_add( Bitwise_invert(first, size), binary_One, size );
         first = Bitwise_change(first, size);
 
         /* First and second are negative. */
         if (secondNegative) {
-            // second = Binary_add( Bitwise_invert(second, size), binary_One, size );
             second = Bitwise_change(second, size);
             return Dec_To_Bin( Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size),
                                 size );
@@ -153,7 +134,6 @@ function Binary_divide(first, second, size, isSigned)
 
     /* Only second is negative. */
     else if (secondNegative) {
-        // second = Binary_add( Bitwise_invert(second, size), binary_One, size );
         second = Bitwise_change(second, size);
         return Dec_To_Bin( -1 * (parseInt(Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size))),
                             size );
@@ -161,12 +141,9 @@ function Binary_divide(first, second, size, isSigned)
 
     /* Neither operand is negative. */
     else {
-        // alert(Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size));
         return Dec_To_Bin( Bin_To_Dec(first, isSigned, size) / Bin_To_Dec(second, isSigned, size),
                             size );
     }
-
-    // return Dec_To_Bin(Bin_To_Dec(first) / Bin_To_Dec(second));
 }
 
 function Binary_modulo(first, second, size, isSigned)

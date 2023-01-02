@@ -19,6 +19,7 @@ import {Bin_To_Hex} from "./BaseConvert.js";
 import {Dec_To_Bin} from "./BaseConvert.js";
 
 import {Binary_add} from "./BinaryArith.js";
+import {Binary_multiply} from "./BinaryArith.js";
 
 import {Bitwise_change} from "./BitwiseOps";
 
@@ -31,7 +32,12 @@ import {invalid} from "./commands.js";
  *  HELPER FUNCTIONS                                                        *
 \* ======================================================================== */
 
-/* Function that sets the output window to a desired value. */
+/* ======================================================================== *\
+ *  Function: setDisplay                                                    *
+ *  Description: Updates the display window to a desired value.             *
+ *  Input:  A value the user wants to output to the display window.         *
+ *  Output: None.                                                           *
+\* ======================================================================== */
 function setDisplay(output)
 {
     const display = document.getElementById("display");
@@ -42,18 +48,23 @@ function setDisplay(output)
  * Function that sets the output window based on the current state of the
  * BitCalc class.
  */
+/* ======================================================================== *\
+ *  Function: setDisplay_auto                                               *
+ *  Description: Updates the display window based on the current state of   *
+ *               the calculator.                                            *
+ *  Input:  The state component of an instance of the BitCalc class.        *
+ *  Output: None.                                                           *
+\* ======================================================================== */
 function setDisplay_auto(state)
 {
-
-    // alert(state.firstSign);
-
     const display = document.getElementById("display");
-    let message;
+    let message = "";
     let FT_local = state.firstTild;
     let ST_local = state.secondTild;
     let FS_local = state.firstSign;
     let SS_local = state.secondSign;
 
+    /* Obtaining base conversion function. */
     let conversion;
     if (state.base === 2) {
         conversion = function (binary, isSigned, size) {return Bin_To_String(binary, isSigned, size)};
@@ -63,10 +74,10 @@ function setDisplay_auto(state)
         conversion = function (binary, isSigned, size) {return Bin_To_Hex(binary, isSigned, size)};
     }
 
+    /* Different display for each readStage. */
     switch (state.readStage)
     {
-
-        /* Display 0 and toggle tilde sign. */
+        /* Stage 0: Display default message or display 0 with ~/- sign. */
         case 0:
 
             if ((Bin_To_Dec(state.firstOp, state.isSigned, state.size) === 0) && (state.base !== 2)) {
@@ -75,13 +86,10 @@ function setDisplay_auto(state)
                 message = (FS_local ? "-" : "" ) + (FT_local ? "~" : "" ) + 
                             conversion(state.firstOp, state.isSigned, state.size);
             }
-
-            // message = (FT_local ? ("~" + conversion(state.firstOp)) : "Enter Input");
-
             display.innerHTML = message;
             break;
 
-        /* Toggle the ~ sign in front of the first operand. */
+        /* Stage 1: Display first operand with ~/- sign. */
         case 1:
 
             message = (FS_local ? "-" : "" ) + (FT_local ? "~" : "" ) + 
@@ -89,7 +97,7 @@ function setDisplay_auto(state)
             display.innerHTML = message;
             break;
 
-        /* Same as before but with a binary operator. */
+        /* Stage 2: Same as before but with a binary operator. */
         case 2:
 
             message = (FS_local ? "-" : "" ) + (FT_local ? "~" : "" ) + 
@@ -98,9 +106,9 @@ function setDisplay_auto(state)
             display.innerHTML = message;
             break;
 
-        /* Same as before unless ~ is inputted. */
+        /* Stage 3: Same as before unless ~/- is inputted. */
         case 3: 
-        
+
             message = (FS_local ? "-" : "" ) + (FT_local ? "~" : "" ) + 
                         conversion(state.firstOp, state.isSigned, state.size) + " " + 
                         state.operator + " " +
@@ -108,8 +116,8 @@ function setDisplay_auto(state)
                         ((SS_local || ST_local) ? "0" : "" );
             display.innerHTML = message;
             break;
-        
-        /* Same as case 2 but with the second operand. */
+
+        /* Stage 4: Same as stage 2 but with the second operand. */
         case 4:
 
             message = (FS_local ? "-" : "" ) + (FT_local ? "~" : "" ) + 
@@ -142,9 +150,8 @@ class BitCalc extends React.Component {
             base: 10,
 
             /* 
-             * Default representation will be uint64. Smaller sizes will just
-             * ignore the higher-order bits. Signage only alters how values
-             * are interpretted.
+             * Default representation is uint32. Smaller sizes ignore higher-
+             * order bits. Signage alters how binary arrays are interpretted.
              */
             isSigned: false,
             size: 32,
@@ -187,57 +194,54 @@ class BitCalc extends React.Component {
 
     }
 
+    /* ==================================================================== *\
+     *  Function: handleClick                                               *
+     *  Description: Performs operations associated with a certain button   *
+     *               when it gets clicked.                                  *
+     *  Input:  The name of the button.                                     *
+     *  Output: None.                                                       *
+    \* ==================================================================== */
     handleClick(command)
     {
-        // alert("Click Processed");
 
         switch (command) {
 
             /* ============================================================ *\
-             *  First checking for numeral inputs                           *
+             *  Processing numeral inputs. Hexadecimal digits are           *
+             *  translated into their decimal forms.                        *
             \* ============================================================ */
             case "A": case "B": case "C": case "D": case "E": case "F":
 
-                if (this.state.base < 16) {
-                    break;
-                } else {
-                    switch (command) {
-                        case "A":
-                            command = 10;
-                            break;
-                        case "B":
-                            command = 11;
-                            break;
-                        case "C":
-                            command = 12;
-                            break;
-                        case "D":
-                            command = 13;
-                            break;
-                        case "E":
-                            command = 14;
-                            break;
-                        case "F":
-                            command = 15;
-                            break;
-                        default:
-                            command = 0;
-                    }
+                switch (command) {
+                    case "A":
+                        command = 10;
+                        break;
+                    case "B":
+                        command = 11;
+                        break;
+                    case "C":
+                        command = 12;
+                        break;
+                    case "D":
+                        command = 13;
+                        break;
+                    case "E":
+                        command = 14;
+                        break;
+                    case "F":
+                        command = 15;
+                        break;
+                    default:
+                        command = 0;
                 }
 
-            case "2": case "3": case "4": case "5":
+            case "0": case "1": case "2": case "3": case "4": case "5":
             case "6": case "7": case "8": case "9":
-
-                if (this.state.base < 10) {
-                    break;
-                }
-
-            case "0": case "1": 
 
                 let bin = Dec_To_Bin(command, this.state.size);
                 let multiplier = this.state.base;
 
-                /* Stage 0: Read first numeral input for first operand */
+                /* Stage 0: Read first numeral input for first operand. */
                 if (this.state.readStage === 0) {
 
                     this.setState({
@@ -247,13 +251,12 @@ class BitCalc extends React.Component {
                         setDisplay_auto(this.state);
                     });
 
-                    // setDisplay(Bin_To_Dec(bin));
-
-                /* Stage 1: Read further numeral input for first operand */
+                /* Stage 1: Append further inputs onto the first operand. */
                 } else if (this.state.readStage === 1) {
 
-                    let prevFirst = Dec_To_Bin(multiplier * Bin_To_Dec(this.state.firstOp, this.state.isSigned, this.state.size),
-                                                this.state.size);
+                    let prevFirst = Binary_multiply(Dec_To_Bin(multiplier),
+                                                    this.state.firstOp,
+                                                    this.state.size);
                     bin = Binary_add(bin, prevFirst, this.state.size);
 
                     this.setState({
@@ -262,9 +265,7 @@ class BitCalc extends React.Component {
                         setDisplay_auto(this.state);
                     });
 
-                    // setDisplay(Bin_To_Dec(bin));
-
-                /* Stage 2: Read first numeral input for second operand */
+                /* Stage 2: Read first numeral input for second operand. */
                 } else if (this.state.readStage === 3) {
 
                     this.setState({
@@ -274,15 +275,12 @@ class BitCalc extends React.Component {
                         setDisplay_auto(this.state);
                     });
 
-                    // setDisplay(Bin_To_Dec(this.state.firstOp) + " " +
-                    //                       this.state.operator + " " +
-                    //            Bin_To_Dec(bin));
-
-                /* Stage 2: Read further numeral input for second operand */
+                /* Stage 2: Append further inputs onto the second operand. */
                 } else if (this.state.readStage === 4) {
 
-                    let prevSecond = Dec_To_Bin(multiplier * Bin_To_Dec(this.state.secondOp, this.state.isSigned, this.state.size),
-                                        this.state.size);
+                    let prevSecond = Binary_multiply(Dec_To_Bin(multiplier),
+                                                    this.state.secondOp,
+                                                    this.state.size);
                     bin = Binary_add(bin, prevSecond, this.state.size);
 
                     this.setState({
@@ -291,17 +289,12 @@ class BitCalc extends React.Component {
                         setDisplay_auto(this.state);
                     });
 
-                    // setDisplay(Bin_To_Dec(this.state.firstOp) + " " +
-                    //                       this.state.operator + " " +
-                    //            Bin_To_Dec(bin));
-
                 }
-
 
                 break;
 
             /* ============================================================ *\
-             *  Then check for binary operators. These all set the current  *
+             *  Checking for binary operators. These all set the current    *
              *  operator to the inputted operator then send the program to  *
              *  Stage 3.                                                    *
             \* ============================================================ */
@@ -318,8 +311,6 @@ class BitCalc extends React.Component {
                         setDisplay_auto(this.state);
                     });
 
-                    // setDisplay(Bin_To_Dec(this.state.firstOp) + " " + command);
-
                 } else if ((this.state.readStage === 0) || 
                            (this.state.readStage === 4)) {
 
@@ -333,23 +324,22 @@ class BitCalc extends React.Component {
                         setDisplay_auto(this.state);
                     });
 
-                    // setDisplay(Bin_To_Dec(prev) + " " + command);
-
                 }
 
                 break;
 
             /* ============================================================ *\
-             *  Unary operators will toggle a prefix in front of the        *
-             *  current operand. These will be processed at evaluation.     *
+             *  Unary operators toggle a binary state component associated  *
+             *  with the current operand.                                   *
             \* ============================================================ */
             case "~":
 
                 let newTild;
                 let RS_local1 = this.state.readStage;
-                if ((RS_local1 === 0) || (RS_local1 === 1)) {
-                    newTild = !(this.state.firstTild);
 
+                if ((RS_local1 === 0) || (RS_local1 === 1)) {
+
+                    newTild = !(this.state.firstTild);
                     if ( !(this.state.firstSign) ) {
                         RS_local1 = this.state.firstOp ? 1 : 0;
                     }
@@ -360,15 +350,15 @@ class BitCalc extends React.Component {
                     }, () => {
                         setDisplay_auto(this.state);
                     });
+
                 } else {
+
                     newTild = !(this.state.secondTild);
                     this.setState({ secondTild: newTild }, () => {
                         setDisplay_auto(this.state);
                     });
-                }
 
-                // alert("firstTild: " + this.state.firstTild);
-                // setDisplay_auto(this.state);
+                }
 
                 break;
 
@@ -378,30 +368,27 @@ class BitCalc extends React.Component {
             \* ============================================================ */
             case "+/-":
 
-                // alert("huh");
                 if ( !(this.state.isSigned) ) {
                     break;
                 }
 
-                // alert("AAA");
-
                 let newNegative;
                 let RS_local2 = this.state.readStage;
+
                 if ((RS_local2 === 0) || (RS_local2 === 1)) {
+
                     newNegative = !(this.state.firstSign);
 
-                    if ( !(this.state.firstTild) ) {
-                        RS_local2 = this.state.firstOp ? 1 : 0;
-                    }
+                    /* 
+                     * Allows user to append numbers after the negative sign
+                     * is removed from the previous output.
+                     */
+                    RS_local2 = 1;
 
                     let firstLocal = this.state.firstOp;
-                    // if ((newNegative && (Bin_To_Dec(firstLocal, this.state.isSigned, this.state.size) < 0)) ||
-                    //     (!newNegative && (Bin_To_Dec(firstLocal, this.state.isSigned, this.state.size) > 0))) {
                     if (Bin_To_Dec(firstLocal, this.state.isSigned, this.state.size) < 0) {
-                        // alert("changed");
                         firstLocal = Bitwise_change(firstLocal, this.state.size);
                     }
-                    // alert("isNegative: " + newNegative);
 
                     this.setState({
                         firstOp: firstLocal,
@@ -410,7 +397,11 @@ class BitCalc extends React.Component {
                     }, () => {
                         setDisplay_auto(this.state);
                     });
-                } else {
+
+                }
+
+                else {
+
                     newNegative = !(this.state.secondSign);
 
                     let secondLocal = this.state.secondOp;
@@ -447,8 +438,6 @@ class BitCalc extends React.Component {
                     setDisplay_auto(this.state);
                 });
 
-                // setDisplay("Enter Input");
-
                 break;
 
             /* ============================================================ *\
@@ -463,6 +452,10 @@ class BitCalc extends React.Component {
                 let newST = this.state.secondTild;
                 let newStage = this.state.readStage;
 
+                /*
+                 * Opposite of numeral case. Remove a digit instead of
+                 * appending one.
+                 */
                 if (this.state.readStage === 1) {
                     newFirst = Dec_To_Bin( parseInt(Bin_To_Dec(this.state.firstOp, this.state.isSigned, this.state.size) / this.state.base), 
                                             this.state.size );
@@ -493,19 +486,6 @@ class BitCalc extends React.Component {
                     setDisplay_auto(this.state);
                 });
 
-                // if (newStage === 0) {
-                //     setDisplay("Enter Input");
-                // } else if (newStage === 1) {
-                //     setDisplay(Bin_To_Dec(newFirst));
-                // } else if (newStage === 2) {
-                //     setDisplay(Bin_To_Dec(newFirst));   // TODO: Change to account for -/~ sign.
-                // } else if (newStage === 3) {
-                //     setDisplay(Bin_To_Dec(newFirst) + " " + newOperator);
-                // } else if (newStage === 4) {
-                //     setDisplay(Bin_To_Dec(newFirst) + " " + newOperator + " " +
-                //                Bin_To_Dec(newSecond));
-                // }
-
                 break;
 
             /* ============================================================ *\
@@ -527,12 +507,9 @@ class BitCalc extends React.Component {
                     readStage: 0
                 }, () => {
 
-                    // alert(this.state.firstSign);
-
                     if (this.state.base === 2) {
                         setDisplay("= " + Bin_To_String(result, this.state.isSigned, this.state.size));
                     } else if (this.state.base === 10) {
-                        // alert(result);
                         setDisplay("= " + Bin_To_Dec(result, this.state.isSigned, this.state.size));
                     } else if (this.state.base === 16) {
                         setDisplay("= " + Bin_To_Hex(result, this.state.isSigned, this.state.size));
@@ -549,8 +526,6 @@ class BitCalc extends React.Component {
             case "Base":
 
                 const baseButton = document.getElementById("base");
-                const hexButtons = document.getElementsByClassName("hexButton");
-                const decButtons = document.getElementsByClassName("decButton");
 
                 let currBase = baseButton.innerHTML;
                 let newBase;
@@ -566,14 +541,6 @@ class BitCalc extends React.Component {
                     newLabel = "BIN";
                 }
 
-                // /* Toggling Buttons */
-                // for (let i = 0; i < hexButtons.length; i++) {
-                //     hexButtons[i].disabled = (newBase !== 16);
-                // }
-                // for (let i = 0; i < decButtons.length; i++) {
-                //     decButtons[i].disabled = (newBase === 2);
-                // }
-
                 baseButton.innerHTML = newLabel;
 
                 this.setState({
@@ -587,7 +554,7 @@ class BitCalc extends React.Component {
             /* ============================================================ *\
              *  If the representation button is clicked, cycle through the  *
              *  integer representations (sizes/signages) supported by the   *
-             * calculator.                                                  *
+             *  calculator.                                                 *
             \* ============================================================ */
             case "Rep":
 
@@ -622,8 +589,6 @@ class BitCalc extends React.Component {
                 } else {
                     changeButton.disabled = true;
                 }
-                // alert("isSigned: " + newSign);
-                // alert("Button Disabled: " + document.getElementById("change").disabled);
 
                 /* Cropping Operands */
                 let croppedFirst = this.state.firstOp;
@@ -675,12 +640,16 @@ class BitCalc extends React.Component {
                     setDisplay_auto(this.state);
                 });
 
-                // setDisplay("Enter Input");
-
         }
     }
 
-    /* Render a single button */
+    /* ==================================================================== *\
+     *  Function: renderButton                                              *
+     *  Description: Creates a single BitCalc button.                       *
+     *  Input:  The name of the button being created.                       *
+     *  Output: A single BitCalc button with properties associated with     *
+     *          its name.                                                   *
+    \* ==================================================================== */
     renderButton(command) {
 
         return (
@@ -694,13 +663,13 @@ class BitCalc extends React.Component {
 
     }
 
-/* ======================================================================== *\
- *  Function: render                                                        *
- *  Description: Renders the BitCalc UI.                                    *
- *  Input:  None.                                                           *
- *  Output: An HTML block containing all the components for the BitCalc     *
- *          program.                                                        *
-\* ======================================================================== */
+    /* ==================================================================== *\
+     *  Function: render                                                    *
+     *  Description: Renders the BitCalc UI.                                *
+     *  Input:  None.                                                       *
+     *  Output: An HTML block containing all the components for the         *
+     *          BitCalc program.                                            *
+    \* ==================================================================== */
     render() {
         return (
             <div>

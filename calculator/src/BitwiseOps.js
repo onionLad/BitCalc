@@ -84,7 +84,6 @@ function Bitwise_lshift(first, second, size)
         }
         result[0] = 0;
     }
-    // alert(result);
     return result;
 }
 
