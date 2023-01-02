@@ -5,7 +5,7 @@ A calculator web app that can perform bitwise operations in addition to standard
 To run the calculator, `cd` into the BitCalc folder and run `bash runBitCalc`. The calculator will then be opened in your prefered browser.
 
 ## Tools & Languages
-The calculator will be built using JavaScript and React. JavaScript gives us access to OOP and bitwise computations, while React allows us to easily organize and construct the calculator UI. The BitCalc directory will have a shell script that can be run to open the calculator in your browser.
+The calculator was built using JavaScript and React. A simple shell script is used to open and run the program.
 
 ## Features
 The calculator can perform the following operations on inputted numbers:
