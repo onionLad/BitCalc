@@ -727,7 +727,7 @@ class BitCalc extends React.Component {
                     </div>
                 </div>
                 <div class="nameTag">
-                    Made by Bill Xia (wxia01@tufts.edu)
+                    Made by Bill Xia (https://github.com/onionLad/BitCalc)
                 </div>
             </div>
         );
